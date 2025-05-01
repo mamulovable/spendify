@@ -1,0 +1,87 @@
+The error message in the image you uploaded is:
+
+javascript
+Copy
+Edit
+TypeError: Cannot read properties of undefined (reading 'map')
+This type of error typically occurs when a variable that is supposed to be an array is actually undefined or null, and you attempt to call .map() on it.
+
+🔍 Likely Cause in Your Code
+The error likely stems from this part:
+
+tsx
+Copy
+Edit
+const formattedData = savedAnalyses.map(analysis => ({
+  date: new Date(analysis.date).toLocaleDateString(),
+  totalIncome: analysis.totalIncome,
+  totalExpense: analysis.totalExpense,
+  name: analysis.name
+}));
+This suggests that savedAnalyses is undefined, which would make savedAnalyses.map(...) throw the error.
+
+✅ Fix
+Make sure getSavedAnalyses() is always returning an array — even if it's empty.
+
+Here's a safer version of the relevant block:
+
+tsx
+Copy
+Edit
+const loadAnalyses = async () => {
+  try {
+    const savedAnalyses: RawAnalysisData[] = await getSavedAnalyses() || [];
+
+    // Add a fallback in case getSavedAnalyses returns null or undefined
+    const validAnalyses = Array.isArray(savedAnalyses) ? savedAnalyses : [];
+
+    setRawAnalysesData(validAnalyses);
+
+    const formattedData = validAnalyses.map(analysis => ({
+      date: new Date(analysis.date).toLocaleDateString(),
+      totalIncome: analysis.totalIncome,
+      totalExpense: analysis.totalExpense,
+      name: analysis.name
+    }));
+    setAnalyses(formattedData);
+
+    const allTransactions = validAnalyses.flatMap(a => {
+      let transactions = [];
+      if (Array.isArray(a.transactions)) {
+        transactions = a.transactions;
+      } else if (typeof a.transactions === 'string') {
+        try {
+          transactions = JSON.parse(a.transactions);
+          if (!Array.isArray(transactions)) transactions = [];
+        } catch {
+          transactions = [];
+        }
+      }
+      return transactions.filter(tx => typeof tx === 'object' && tx !== null);
+    });
+
+    console.log('Raw Transactions:', allTransactions);
+    setRawTransactions(allTransactions);
+  } catch (error) {
+    console.error('Failed to load analyses:', error);
+    setRawAnalysesData([]); // Fallback to empty array
+    setAnalyses([]);
+    setRawTransactions([]);
+  } finally {
+    setLoading(false);
+  }
+};
+🧠 Pro Tip
+Also, consider adding some type validation or a fallback inside getSavedAnalyses() itself. For example:
+
+ts
+Copy
+Edit
+export const getSavedAnalyses = async (): Promise<RawAnalysisData[]> => {
+  try {
+    const data = await yourStorageCall();
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    return [];
+  }
+};
