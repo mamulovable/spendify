@@ -5,4 +5,5 @@ export interface SubscriptionLimits {
   canCompare: boolean;
   hasFinancialGoals: boolean;
   hasAIFinancialAdvisor: boolean;
-} 
+  budgetPlanner: boolean;
+}

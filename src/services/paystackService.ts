@@ -1,4 +1,4 @@
-import { Plan, PlanDuration } from '@/config/pricing';
+import { Plan, PlanDuration, calculatePrice } from '@/config/pricing';
 import { config } from '@/config/env';
 
 declare global {
@@ -54,13 +54,17 @@ export const initializePayment = async (
     throw new Error('Paystack script not loaded. Please refresh the page and try again.');
   }
 
-  const amount = plan.basePrice * 100; // Convert to kobo
+  // If this is a card verification for trial, set amount to ₦100 (10000 kobo)
+  // Otherwise, calculate the total price for the selected plan and duration
+  const isCardVerification = metadata.is_card_verification === 'true';
+  const amountInKobo = isCardVerification ? 10000 : calculatePrice(plan, duration) * 100; // ₦100 = 10000 kobo
+
   const reference = 'TR' + Math.floor((Math.random() * 1000000000) + 1);
 
   const handler = window.PaystackPop.setup({
     key: config.paystackPublicKey,
     email,
-    amount,
+    amount: amountInKobo,
     currency: 'NGN',
     ref: reference,
     metadata: {
