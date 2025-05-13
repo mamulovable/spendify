@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useAdminUsers, type AdminUser } from '@/hooks/useAdminUsers';
-import { MoreHorizontal, Search, AlertCircle } from 'lucide-react';
+import { MoreHorizontal, Search, AlertCircle, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 import {
   AlertDialog,
@@ -34,6 +35,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 export default function Users() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -186,7 +188,7 @@ export default function Users() {
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="capitalize">
-                            {user.plan_name || "None"}
+                            {user.subscription_plan || "None"}
                           </Badge>
                         </TableCell>
                         <TableCell>{user.document_count || 0}</TableCell>
@@ -197,7 +199,14 @@ export default function Users() {
                             : "Never"}
                         </TableCell>
                         <TableCell>
-                          <DropdownMenu>
+                          <Button
+                    variant="ghost"
+                    className="hover:bg-transparent p-0 mr-2"
+                    onClick={() => navigate(`/admin/users/${user.id}`)}
+                  >
+                    <FileText className="h-4 w-4" />
+                  </Button>
+                  <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" className="h-8 w-8 p-0">
                                 <span className="sr-only">Open menu</span>

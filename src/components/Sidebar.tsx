@@ -72,6 +72,12 @@ export function Sidebar({ className }: SidebarProps) {
                   Transactions
                 </Button>
               </Link>
+              <Link to="/expense-tracker">
+                <Button variant="ghost" className="w-full justify-start">
+                  <Receipt className="mr-2 h-4 w-4" />
+                  Expense Tracker
+                </Button>
+              </Link>
               <FeatureGate feature="advancedAnalytics">
                 <Link to="/dashboard/advanced-analytics">
                   <Button variant="ghost" className="w-full justify-start">

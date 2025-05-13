@@ -49,6 +49,49 @@ const navItems: NavItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     permission: 'view_analytics',
   },
+  // Communication & Maintenance features
+  {
+    title: 'Email Templates',
+    href: '/admin/email-templates',
+    icon: <FileText className="w-5 h-5" />,
+    permission: 'manage_communication',
+  },
+  {
+    title: 'Campaigns',
+    href: '/admin/campaigns',
+    icon: <BarChart3 className="w-5 h-5" />,
+    permission: 'manage_communication',
+  },
+  {
+    title: 'User Segments',
+    href: '/admin/user-segments',
+    icon: <Users className="w-5 h-5" />,
+    permission: 'manage_communication',
+  },
+  {
+    title: 'Backups',
+    href: '/admin/backups',
+    icon: <FileText className="w-5 h-5" />,
+    permission: 'manage_maintenance',
+  },
+  {
+    title: 'Data Cleanup',
+    href: '/admin/data-cleanup',
+    icon: <FileText className="w-5 h-5" />,
+    permission: 'manage_maintenance',
+  },
+  {
+    title: 'Release Notes',
+    href: '/admin/release-notes',
+    icon: <BarChart3 className="w-5 h-5" />,
+    permission: 'view_release_notes',
+  },
+  {
+    title: 'System Updates',
+    href: '/admin/system-updates',
+    icon: <Settings className="w-5 h-5" />,
+    permission: 'manage_maintenance',
+  },
   {
     title: 'Notifications',
     href: '/admin/notifications',

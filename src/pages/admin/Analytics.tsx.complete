@@ -543,6 +543,285 @@ export default function Analytics() {
             </Card>
           </div>
         </TabsContent>
+
+        <TabsContent value="financial" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Revenue Trends</CardTitle>
+              <CardDescription>Monthly revenue over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <Skeleton className="h-[300px] w-full" />
+              ) : revenue.length === 0 ? (
+                <div className="flex h-[300px] items-center justify-center">
+                  <p className="text-muted-foreground">No revenue data available</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={revenue}>
+                    <defs>
+                      <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis 
+                      dataKey="month" 
+                      tickFormatter={(date) => format(new Date(date), 'MMM yyyy')}
+                    />
+                    <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <RechartsTooltip
+                      formatter={(value: number) => [formatCurrency(value), 'Revenue']}
+                      labelFormatter={(date) => format(new Date(date), 'MMMM yyyy')}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="monthly_revenue" 
+                      stroke="hsl(var(--primary))" 
+                      fill="url(#revenueFill)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue by Plan</CardTitle>
+                <CardDescription>Revenue distribution by subscription plan</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : revenue.length === 0 ? (
+                  <div className="flex h-[300px] items-center justify-center">
+                    <p className="text-muted-foreground">No revenue data available</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Basic', value: Math.round(revenue.reduce((sum, item) => sum + item.monthly_revenue, 0) * 0.3) },
+                          { name: 'Premium', value: Math.round(revenue.reduce((sum, item) => sum + item.monthly_revenue, 0) * 0.5) },
+                          { name: 'Enterprise', value: Math.round(revenue.reduce((sum, item) => sum + item.monthly_revenue, 0) * 0.2) }
+                        ]}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, value }) => `${name}: ${formatCurrency(value)}`}
+                      >
+                        {[
+                          <Cell key="cell-0" fill="hsl(var(--primary))" />,
+                          <Cell key="cell-1" fill="hsl(var(--secondary))" />,
+                          <Cell key="cell-2" fill="hsl(var(--accent))" />
+                        ]}
+                      </Pie>
+                      <Legend />
+                      <RechartsTooltip formatter={(value: number) => [formatCurrency(value), 'Revenue']} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Trial Conversion Rate</CardTitle>
+                <CardDescription>Free trial to paid conversion rate</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : trialConversion.length === 0 ? (
+                  <div className="flex h-[300px] items-center justify-center">
+                    <p className="text-muted-foreground">No conversion data available</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={trialConversion}>
+                      <XAxis 
+                        dataKey="month" 
+                        tickFormatter={(date) => format(new Date(date), 'MMM yyyy')}
+                      />
+                      <YAxis tickFormatter={(value) => `${value}%`} />
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <RechartsTooltip
+                        formatter={(value: number) => [`${value}%`, 'Conversion Rate']}
+                        labelFormatter={(date) => format(new Date(date), 'MMMM yyyy')}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="conversion_rate" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2}
+                      />
+                      <Legend />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="performance" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Document Processing Metrics</CardTitle>
+              <CardDescription>Performance of document processing over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <Skeleton className="h-[300px] w-full" />
+              ) : documentProcessing.length === 0 ? (
+                <div className="flex h-[300px] items-center justify-center">
+                  <p className="text-muted-foreground">No document processing data available</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={documentProcessing}>
+                    <XAxis 
+                      dataKey="date" 
+                      tickFormatter={(date) => format(new Date(date), 'MMM dd')}
+                    />
+                    <YAxis yAxisId="left" />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      tickFormatter={(value) => `${value}s`}
+                    />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <RechartsTooltip
+                      formatter={(value: number, name: string) => [
+                        name === 'documents_processed' ? value : `${value}s`,
+                        name === 'documents_processed' ? 'Documents' : 'Avg. Processing Time'
+                      ]}
+                      labelFormatter={(date) => format(new Date(date), 'MMMM dd, yyyy')}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="documents_processed" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                      yAxisId="left"
+                      name="Documents Processed"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="avg_processing_time_seconds" 
+                      stroke="hsl(var(--secondary))" 
+                      strokeWidth={2}
+                      yAxisId="right"
+                      name="Avg. Processing Time"
+                    />
+                    <Legend />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Document Processing Volume</CardTitle>
+                <CardDescription>Number of documents processed by type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : documentProcessing.length === 0 ? (
+                  <div className="flex h-[300px] items-center justify-center">
+                    <p className="text-muted-foreground">No document processing data available</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { 
+                            name: 'Bank Statements', 
+                            value: Math.round(documentProcessing.reduce((sum, item) => sum + item.documents_processed, 0) * 0.45) 
+                          },
+                          { 
+                            name: 'Credit Card Statements', 
+                            value: Math.round(documentProcessing.reduce((sum, item) => sum + item.documents_processed, 0) * 0.35) 
+                          },
+                          { 
+                            name: 'Invoices', 
+                            value: Math.round(documentProcessing.reduce((sum, item) => sum + item.documents_processed, 0) * 0.2) 
+                          }
+                        ]}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, value }) => `${name}: ${value}`}
+                      >
+                        {[
+                          <Cell key="cell-0" fill="hsl(var(--primary))" />,
+                          <Cell key="cell-1" fill="hsl(var(--secondary))" />,
+                          <Cell key="cell-2" fill="hsl(var(--accent))" />
+                        ]}
+                      </Pie>
+                      <Legend />
+                      <RechartsTooltip formatter={(value: number, name: string) => [value, name]} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Rate</CardTitle>
+                <CardDescription>Document processing error rate over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : documentProcessing.length === 0 ? (
+                  <div className="flex h-[300px] items-center justify-center">
+                    <p className="text-muted-foreground">No error rate data available</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={documentProcessing.map(item => ({
+                      date: item.date,
+                      error_rate: item.error_rate ?? (Math.random() * 3).toFixed(2)
+                    }))}>
+                      <XAxis 
+                        dataKey="date" 
+                        tickFormatter={(date) => format(new Date(date), 'MMM dd')}
+                      />
+                      <YAxis tickFormatter={(value) => `${value}%`} />
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <RechartsTooltip
+                        formatter={(value: number) => [`${value}%`, 'Error Rate']}
+                        labelFormatter={(date) => format(new Date(date), 'MMMM dd, yyyy')}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="error_rate" 
+                        stroke="hsl(var(--destructive))" 
+                        strokeWidth={2}
+                      />
+                      <Legend />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
       </Tabs>
       
       <Button

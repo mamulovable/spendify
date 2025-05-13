@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/useToast';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, Search, AlertCircle } from 'lucide-react';
+import { MoreHorizontal, Search, AlertCircle, FileText } from 'lucide-react';
 import { useAdminSubscriptions, type AdminSubscription } from '@/hooks/useAdminSubscriptions';
 import { formatCurrency } from '@/lib/utils';
 
@@ -62,6 +63,7 @@ function CancelDialog({ isOpen, onClose, onConfirm, subscription }: CancelDialog
 }
 
 export default function Subscriptions() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -250,6 +252,13 @@ export default function Subscriptions() {
                           {new Date(subscription.current_period_end).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
+                          <Button
+                            variant="ghost"
+                            className="hover:bg-transparent p-0 mr-2"
+                            onClick={() => navigate(`/admin/subscriptions/${subscription.id}`)}
+                          >
+                            <FileText className="h-4 w-4" />
+                          </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button

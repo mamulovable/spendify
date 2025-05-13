@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, LineChart, Line } from 'recharts';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
-  Receipt, Upload, PieChart, ArrowRight, LogIn, 
+  Receipt, Upload, PieChart as PieChartIcon, ArrowRight, LogIn, 
   ChevronRight, BarChart3, BrainCircuit, 
   TrendingUp, SparkleIcon, Lightbulb, ShieldCheck,
   DollarSign, ShoppingBag, Home, Car, Check, X
@@ -596,6 +597,54 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">Browse and filter your transaction history easily</p>
                   </div>
                 </button>
+
+                {/* Merchants Tab Button */}
+                <button 
+                  onClick={() => setActiveTab('tabMerchants')}
+                  className={cn(
+                    "w-full text-left p-4 rounded-lg flex items-start transition-all duration-300",
+                    activeTab === 'tabMerchants' 
+                      ? "bg-primary/10 border border-primary/20" 
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  <div className="mr-4 mt-1">
+                    <div className={cn(
+                      "rounded-full p-2 w-8 h-8 flex items-center justify-center",
+                      activeTab === 'tabMerchants' ? "bg-primary/20" : "bg-muted"
+                    )}>
+                      <ShoppingBag className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-1">Merchants</h3>
+                    <p className="text-sm text-muted-foreground">See where you spend most and track merchant trends</p>
+                  </div>
+                </button>
+
+                {/* Merchant Analytics Tab Button */}
+                <button 
+                  onClick={() => setActiveTab('tabMerchantAnalytics')}
+                  className={cn(
+                    "w-full text-left p-4 rounded-lg flex items-start transition-all duration-300",
+                    activeTab === 'tabMerchantAnalytics' 
+                      ? "bg-primary/10 border border-primary/20" 
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  <div className="mr-4 mt-1">
+                    <div className={cn(
+                      "rounded-full p-2 w-8 h-8 flex items-center justify-center",
+                      activeTab === 'tabMerchantAnalytics' ? "bg-primary/20" : "bg-muted"
+                    )}>
+                      <BarChart3 className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-1">Merchant Analytics</h3>
+                    <p className="text-sm text-muted-foreground">Deep-dive into merchant-level insights and patterns</p>
+                  </div>
+                </button>
                 
                 <button 
                   onClick={() => setActiveTab('tab3')}
@@ -826,6 +875,109 @@ const Index = () => {
                     </div>
                   )}
                   
+                  {activeTab === 'tabMerchants' && (
+                    <div className="space-y-6">
+                      <div className="p-4 rounded-md bg-blue-500/5 border border-blue-500/20">
+                        <h4 className="font-medium flex items-center gap-2 mb-2">
+                          <ShoppingBag className="w-4 h-4 text-blue-500" />
+                          Top Merchants
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Discover which merchants you spend the most with. Easily spot your top vendors and track spending habits by store or service.
+                        </p>
+                        <ul className="mt-4 space-y-2">
+                          <li className="flex justify-between text-sm"><span>Amazon.com</span> <span className="font-medium">$1,200</span></li>
+                          <li className="flex justify-between text-sm"><span>Uber</span> <span className="font-medium">$450</span></li>
+                          <li className="flex justify-between text-sm"><span>Whole Foods Market</span> <span className="font-medium">$300</span></li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'tabMerchantAnalytics' && (
+  <div className="space-y-6">
+    <div className="p-4 rounded-md bg-purple-500/5 border border-purple-500/20">
+      <h4 className="font-medium flex items-center gap-2 mb-2">
+        <BarChart3 className="w-4 h-4 text-purple-500" />
+        Merchant Analytics
+      </h4>
+      <p className="text-muted-foreground mb-4">
+        Get advanced analytics on your merchant transactions. Visualize frequency, total spend, and trends for each merchant to optimize where your money goes.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Donut Chart (Top Merchants by Spend) */}
+        <div className="bg-[#232946] rounded-2xl shadow-lg p-6 flex flex-col items-center">
+          <h5 className="text-base font-semibold mb-2 text-white">Top Merchants by Spend</h5>
+          <div className="h-[180px] w-full flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Amazon.com', value: 1200, fill: '#FFD600' },
+                    { name: 'Uber', value: 450, fill: '#00CFFF' },
+                    { name: 'Whole Foods Market', value: 300, fill: '#00E676' },
+                  ]}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={75}
+                  stroke="#232946"
+                  paddingAngle={2}
+                >
+                  <Cell key="cell-0" fill="#FFD600" />
+                  <Cell key="cell-1" fill="#00CFFF" />
+                  <Cell key="cell-2" fill="#00E676" />
+                </Pie>
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ paddingTop: "10px" }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* Bar Chart (Merchant Frequency) */}
+        <div className="bg-[#232946] rounded-2xl shadow-lg p-6 flex flex-col items-center">
+          <h5 className="text-base font-semibold mb-2 text-white">Merchant Transaction Frequency</h5>
+          <div className="h-[180px] w-full flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={[
+                { name: 'Amazon.com', frequency: 8 },
+                { name: 'Uber', frequency: 15 },
+                { name: 'Whole Foods Market', frequency: 5 },
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444857" />
+                <XAxis dataKey="name" stroke="#fff" tick={{ fill: '#fff', fontSize: 12 }} />
+                <YAxis stroke="#fff" tick={{ fill: '#fff', fontSize: 12 }} />
+                <Tooltip contentStyle={{ background: '#232946', color: '#fff', border: 'none' }} />
+                <Bar dataKey="frequency" fill="#FFD600" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+      {/* Line/Area Chart (Merchant Spend Trend) */}
+      <div className="bg-[#232946] rounded-2xl shadow-lg p-6 flex flex-col items-center mt-8">
+        <h5 className="text-base font-semibold mb-2 text-white">Merchant Spend Trend</h5>
+        <div className="h-[180px] w-full flex items-center justify-center">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={[
+              { name: 'Amazon.com', totalSpent: 1200 },
+              { name: 'Uber', totalSpent: 450 },
+              { name: 'Whole Foods Market', totalSpent: 300 },
+            ]}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444857" />
+              <XAxis dataKey="name" stroke="#fff" tick={{ fill: '#fff', fontSize: 12 }} />
+              <YAxis stroke="#fff" tick={{ fill: '#fff', fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: '#232946', color: '#fff', border: 'none' }} />
+              <Line type="monotone" dataKey="totalSpent" stroke="#00CFFF" strokeWidth={3} dot={{ r: 4, fill: '#00CFFF' }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
                   {activeTab === 'tab3' && (
                     <div className="space-y-6">
                       <div className="p-4 rounded-md bg-primary/5 border border-primary/20">
@@ -982,15 +1134,12 @@ const Index = () => {
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-gray-50 dark:bg-gray-900">
-        <div className="container px-4 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-muted-foreground">
-              Choose the plan that best fits your needs
-            </p>
-          </div>
-
+      <section className="py-24 px-6 bg-gradient-to-b from-background/70 to-background/100">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">Pricing Plans</h2>
+          <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
+            Start with a <span className="font-semibold text-primary">7-day free trial</span>. Cancel anytime. No credit card required for trial.
+          </p>
           <div className="flex justify-center mb-8">
             <Tabs defaultValue={selectedDuration.months.toString()} className="w-full max-w-xs">
               <TabsList className="grid w-full grid-cols-3">
@@ -1013,25 +1162,27 @@ const Index = () => {
               </TabsList>
             </Tabs>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {PLANS.map((plan) => {
               const price = calculatePrice(plan, selectedDuration);
               const monthlyPrice = price / selectedDuration.months;
-
+              const isCurrentPlan = user && user.activePlan === plan.id;
               return (
-                <Card key={plan.id} className="relative p-6 flex flex-col">
+                <Card key={plan.id} className={`relative p-6 flex flex-col ${isCurrentPlan ? 'border-primary' : ''}`}>
                   {plan.badge && (
                     <div className="absolute top-0 right-0 -translate-y-1/2 px-3 py-1 bg-primary text-primary-foreground text-sm rounded-full">
                       {plan.badge}
                     </div>
                   )}
-
+                  {isCurrentPlan && (
+                    <div className="absolute top-0 left-0 -translate-y-1/2 px-3 py-1 bg-primary text-primary-foreground text-sm rounded-full">
+                      Current Plan
+                    </div>
+                  )}
                   <div className="mb-6">
                     <h3 className="text-2xl font-bold">{plan.name}</h3>
                     <p className="text-muted-foreground">{plan.description}</p>
                   </div>
-
                   <div className="mb-6">
                     <div className="text-3xl font-bold">
                       {formatPrice(monthlyPrice)}
@@ -1043,7 +1194,6 @@ const Index = () => {
                       </div>
                     )}
                   </div>
-
                   <div className="flex-grow space-y-4 mb-6">
                     {plan.features.map((feature) => (
                       <div key={feature.name} className="flex items-start gap-3">
@@ -1056,25 +1206,127 @@ const Index = () => {
                       </div>
                     ))}
                   </div>
-
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    onClick={() => navigate('/login')}
-                  >
-                    Get Started
-                  </Button>
+                  <div className="mt-6 space-y-3">
+                    <Button
+                      onClick={() => {
+                        if (!user) {
+                          window.location.href = '/login';
+                          return;
+                        }
+                        // Buy Now logic (simulate payment)
+                        // ...
+                      }}
+                      className="w-full"
+                      disabled={false}
+                      variant="default"
+                    >
+                      Buy Now ({formatPrice(monthlyPrice)}/mo)
+                    </Button>
+                    {!user ? (
+                      <Button
+                        onClick={() => window.location.href = '/login'}
+                        className="w-full"
+                        disabled={false}
+                      >
+                        Login to Start Trial
+                      </Button>
+                    ) : !user.activePlan ? (
+                      <>
+                        <Button
+                          onClick={() => {/* Start 7-day trial logic */}}
+                          className="w-full"
+                          disabled={false}
+                          variant="outline"
+                        >
+                          Start 7-day Trial
+                        </Button>
+                        <div>
+                          <Button
+                            onClick={() => {/* 30-day trial with card logic */}}
+                            className="w-full"
+                            disabled={false}
+                          >
+                            Get 30-day Trial (Verify Card - ₦100 hold)
+                          </Button>
+                          <p className="text-xs text-muted-foreground text-center mt-1">
+                            We'll place a ₦100 hold on your card for verification. This amount will be refunded.
+                          </p>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
                 </Card>
               );
             })}
           </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-muted-foreground">
-              All plans include a 7-day free trial. Cancel anytime during the trial period.
-              <br />
-              Need help choosing? <a href="/contact" className="text-primary hover:underline">Contact our team</a>
+        </div>
+      </section>
+      
+      {/* Testimonials */}
+      <section className="py-24 px-6 bg-gradient-to-b from-background to-background/80 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent z-0" />
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What our customers say</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Join thousands of satisfied users who have transformed their financial management
             </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <TestimonialCard 
+              quote="This platform has completely changed how I manage my finances. The AI insights are genuinely helpful and have saved me thousands of dollars."
+              author="Sarah Johnson"
+              company="Marketing Director"
+              delay={0}
+            />
+            <TestimonialCard 
+              quote="The visualization tools are exceptional. I can finally understand my spending patterns at a glance and make better financial decisions."
+              author="Michael Chen"
+              company="Software Engineer"
+              delay={100}
+            />
+            <TestimonialCard 
+              quote="I've tried many financial tools, but this one stands out with its intelligent automation and user-friendly interface. Highly recommended!"
+              author="Emily Rodriguez"
+              company="Small Business Owner"
+              delay={200}
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="py-24 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your financial management?</h2>
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            Join thousands of users who have revolutionized their approach to personal finance with our AI-powered platform
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {user ? (
+              <Link to="/dashboard/upload">
+                <Button size="lg" className="rounded-md px-8 gap-2 h-12">
+                  Go to Dashboard
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <Button size="lg" className="rounded-md px-8 gap-2 h-12">
+                  Get Started Now
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            )}
+            
+            <Link to="/contact">
+              <Button size="lg" variant="outline" className="rounded-md px-8 h-12">
+                Contact Sales
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -26,9 +26,12 @@ export const PLANS: Plan[] = [
     basePrice: 1500, // in NGN
     features: [
       { name: 'Upload Bank Statements', included: true },
+      { name: 'Charts & Visualizations', included: true },
+      { name: 'Expense Tracker', included: true },
       { name: 'Basic Transaction Analysis', included: true },
       { name: 'Category Breakdown', included: true },
       { name: 'Export to PDF', included: true },
+      { name: 'Financial Goals', included: false },
       { name: 'Compare Analyses', included: false },
       { name: 'Advanced Analytics', included: false },
       { name: 'AI Financial Advisor', included: false },
@@ -43,9 +46,12 @@ export const PLANS: Plan[] = [
     badge: 'Most Popular',
     features: [
       { name: 'Upload Bank Statements', included: true },
+      { name: 'Charts & Visualizations', included: true },
+      { name: 'Expense Tracker', included: true },
       { name: 'Basic Transaction Analysis', included: true },
       { name: 'Category Breakdown', included: true },
       { name: 'Export to PDF', included: true },
+      { name: 'Financial Goals', included: true },
       { name: 'Compare Analyses', included: true },
       { name: 'Advanced Analytics', included: true },
       { name: 'AI Financial Advisor', included: false },
@@ -59,9 +65,12 @@ export const PLANS: Plan[] = [
     basePrice: 5000,
     features: [
       { name: 'Upload Bank Statements', included: true },
+      { name: 'Charts & Visualizations', included: true },
+      { name: 'Expense Tracker', included: true },
       { name: 'Basic Transaction Analysis', included: true },
       { name: 'Category Breakdown', included: true },
       { name: 'Export to PDF', included: true },
+      { name: 'Financial Goals', included: true },
       { name: 'Compare Analyses', included: true },
       { name: 'Advanced Analytics', included: true },
       { name: 'AI Financial Advisor', included: true },

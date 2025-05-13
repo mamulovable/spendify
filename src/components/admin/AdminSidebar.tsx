@@ -33,6 +33,12 @@ const sidebarItems: SidebarItem[] = [
     permission: 'view_dashboard'
   },
   {
+    title: 'Analytics',
+    href: '/admin/analytics',
+    icon: BarChart3,
+    permission: 'view_dashboard'
+  },
+  {
     title: 'Users',
     href: '/admin/users',
     icon: Users,
@@ -45,22 +51,22 @@ const sidebarItems: SidebarItem[] = [
     permission: 'manage_subscriptions'
   },
   {
-    title: 'Content',
-    href: '/admin/content',
-    icon: FileText,
-    permission: 'manage_content'
-  },
-  {
-    title: 'System',
-    href: '/admin/settings',
-    icon: Settings,
-    permission: 'manage_settings'
+    title: 'Plans',
+    href: '/admin/plans',
+    icon: PiggyBank,
+    permission: 'manage_subscriptions'
   },
   {
     title: 'Documents',
     href: '/admin/documents',
-    icon: FileStack,
-    permission: 'manage_documents'
+    icon: FileText,
+    permission: 'view_dashboard'
+  },
+  {
+    title: 'System Settings',
+    href: '/admin/settings',
+    icon: Settings,
+    permission: 'view_dashboard'
   },
   {
     title: 'Financial',
@@ -72,7 +78,7 @@ const sidebarItems: SidebarItem[] = [
     title: 'Reports',
     href: '/admin/reports',
     icon: BarChart3,
-    permission: 'view_reports'
+    
   },
   {
     title: 'Support',

@@ -16,6 +16,7 @@ import BillingPage from '@/pages/BillingPage';
 import PaystackTest from '@/pages/PaystackTest';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ExpenseTracker from '@/pages/ExpenseTracker';
 
 // Lazy load pages
 const DashboardHome = lazy(() => import('@/pages/DashboardHome'));
@@ -25,6 +26,7 @@ const SavedAnalyses = lazy(() => import('@/pages/SavedAnalyses'));
 const Charts = lazy(() => import('@/pages/Charts'));
 const Compare = lazy(() => import('@/pages/Compare'));
 const AdvancedAnalytics = lazy(() => import('@/pages/AdvancedAnalytics'));
+const AdvancedAnalysis = lazy(() => import('@/pages/AdvancedAnalysis'));
 const FinancialGoals = lazy(() => import('@/pages/FinancialGoals'));
 const AIFinancialAdvisor = lazy(() => import('@/pages/AIFinancialAdvisor'));
 const Transactions = lazy(() => import('@/pages/Transactions'));
@@ -34,12 +36,31 @@ const BudgetForm = lazy(() => import('@/pages/BudgetForm'));
 // Lazy load admin pages
 const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard'));
 const AdminUsers = lazy(() => import('@/pages/admin/Users'));
+const AdminUserDetails = lazy(() => import('@/pages/admin/UserDetails'));
 const AdminSubscriptions = lazy(() => import('@/pages/admin/Subscriptions'));
+const AdminSubscriptionDetails = lazy(() => import('@/pages/admin/SubscriptionDetails'));
+const AdminPlans = lazy(() => import('@/pages/admin/Plans'));
 const AdminDocuments = lazy(() => import('@/pages/admin/Documents'));
 const AdminAnalytics = lazy(() => import('@/pages/admin/Analytics'));
+const AdminReports = lazy(() => import('@/pages/admin/Reports'));
 const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
 const AdminNotifications = lazy(() => import('@/pages/admin/Notifications'));
+
+import EmailTemplates from '@/pages/admin/EmailTemplates';
+import Campaigns from '@/pages/admin/Campaigns';
+import UserSegments from '@/pages/admin/UserSegments';
+import Backups from '@/pages/admin/Backups';
+import DataCleanup from '@/pages/admin/DataCleanup';
+import ReleaseNotes from '@/pages/admin/ReleaseNotes';
+import SystemUpdates from '@/pages/admin/SystemUpdates';
 const AdminLogin = lazy(() => import('@/pages/admin/Login'));
+
+const Features = lazy(() => import('@/pages/Features'));
+const About = lazy(() => import('@/pages/About'));
+const Blog = lazy(() => import('@/pages/Blog'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const ThankYou = lazy(() => import('@/pages/ThankYou'));
+const FAQ = lazy(() => import('@/pages/FAQ'));
 
 const router = createBrowserRouter([
   {
@@ -59,6 +80,30 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Index />
+      },
+      {
+        path: '/features',
+        element: <Suspense fallback={null}><Features /></Suspense>
+      },
+      {
+        path: '/about',
+        element: <Suspense fallback={null}><About /></Suspense>
+      },
+      {
+        path: '/blog',
+        element: <Suspense fallback={null}><Blog /></Suspense>
+      },
+      {
+        path: '/contact',
+        element: <Suspense fallback={null}><Contact /></Suspense>
+      },
+      {
+        path: '/thankyou',
+        element: <Suspense fallback={null}><ThankYou /></Suspense>
+      },
+      {
+        path: '/faq',
+        element: <Suspense fallback={null}><FAQ /></Suspense>
       },
       {
         path: '/auth',
@@ -105,6 +150,10 @@ const router = createBrowserRouter([
             element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdvancedAnalytics /></Suspense>
           },
           {
+            path: 'advanced-analysis',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdvancedAnalysis /></Suspense>
+          },
+          {
             path: 'financial-goals',
             element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><FinancialGoals /></Suspense>
           },
@@ -129,6 +178,10 @@ const router = createBrowserRouter([
       {
         path: '/paystack-test',
         element: <PaystackTest />
+      },
+      {
+        path: '/expense-tracker',
+        element: <ProtectedRoute><ExpenseTracker /></ProtectedRoute>
       },
       {
         path: '*',
@@ -174,8 +227,20 @@ const router = createBrowserRouter([
             element: <AdminUsers />,
           },
           {
+            path: 'users/:userId',
+            element: <AdminUserDetails />,
+          },
+          {
             path: 'subscriptions',
             element: <AdminSubscriptions />,
+          },
+          {
+            path: 'subscriptions/:subscriptionId',
+            element: <AdminSubscriptionDetails />,
+          },
+          {
+            path: 'plans',
+            element: <AdminPlans />,
           },
           {
             path: 'documents',
@@ -186,12 +251,44 @@ const router = createBrowserRouter([
             element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminAnalytics /></Suspense>,
           },
           {
+            path: 'reports',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminReports /></Suspense>,
+          },
+          {
             path: 'settings',
             element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminSettings /></Suspense>,
           },
           {
             path: 'notifications',
             element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminNotifications /></Suspense>,
+          },
+          {
+            path: 'email-templates',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><EmailTemplates /></Suspense>,
+          },
+          {
+            path: 'campaigns',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Campaigns /></Suspense>,
+          },
+          {
+            path: 'user-segments',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><UserSegments /></Suspense>,
+          },
+          {
+            path: 'backups',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Backups /></Suspense>,
+          },
+          {
+            path: 'data-cleanup',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><DataCleanup /></Suspense>,
+          },
+          {
+            path: 'release-notes',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><ReleaseNotes /></Suspense>,
+          },
+          {
+            path: 'system-updates',
+            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><SystemUpdates /></Suspense>,
           }
         ]
       }

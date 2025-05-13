@@ -296,6 +296,64 @@ export default function Pricing() {
               </div>
 
               <div className="mt-6 space-y-3">
+                <Button
+                  onClick={() => {
+                    if (!user) {
+                      toast({
+                        title: "Login Required",
+                        description: "Please login or sign up to buy a plan.",
+                        variant: "destructive",
+                      });
+                      navigate('/login');
+                      return;
+                    }
+                    setIsProcessing(true);
+                    initializePayment(
+                      plan,
+                      selectedDuration,
+                      user.email!,
+                      { user_id: user.id, user_email: user.email! },
+                      async (reference) => {
+                        try {
+                          await updateSubscription(plan.id, { isTrialStart: false });
+                          toast({
+                            title: "Payment Successful",
+                            description: "Your subscription has been activated.",
+                          });
+                          setTimeout(() => navigate('/dashboard'), 1000);
+                        } catch (error) {
+                          toast({
+                            title: "Subscription Update Failed",
+                            description: "Payment was successful but subscription update failed. Please contact support.",
+                            variant: "destructive",
+                          });
+                        } finally {
+                          setIsProcessing(false);
+                        }
+                      },
+                      () => {
+                        toast({
+                          title: "Payment Cancelled",
+                          description: "You chose to cancel the payment. You can subscribe anytime!",
+                          variant: "default",
+                        });
+                        setIsProcessing(false);
+                      }
+                    );
+                  }}
+                  className="w-full"
+                  disabled={isProcessing || subscriptionLoading}
+                  variant="default"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing
+                    </>
+                  ) : (
+                    `Buy Now (${formatPrice(monthlyPrice)}/mo)`
+                  )}
+                </Button>
                 {!user ? (
                   <Button
                     onClick={() => navigate('/login')}

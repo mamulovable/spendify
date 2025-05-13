@@ -13,6 +13,8 @@ import {
   Bot,
   Receipt,
   PiggyBank,
+  Zap,
+  Fingerprint,
 } from "lucide-react";
 import { FeatureGate } from "@/components/FeatureGate";
 
@@ -66,6 +68,14 @@ export function DashboardNav() {
           <Button variant="ghost" className="w-full justify-start">
             <TrendingUp className="mr-2 h-4 w-4" />
             Advanced Analytics
+          </Button>
+        </Link>
+      </FeatureGate>
+      <FeatureGate feature="advancedAnalysis">
+        <Link to="/dashboard/advanced-analysis">
+          <Button variant="ghost" className="w-full justify-start">
+            <Fingerprint className="mr-2 h-4 w-4" />
+            Advanced Analysis
           </Button>
         </Link>
       </FeatureGate>

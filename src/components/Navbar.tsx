@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Receipt, Upload, PieChart, LogIn, LogOut, Menu, Save, BarChart, CreditCard, Home, ArrowLeftRight, TrendingUp, Target, Bot } from 'lucide-react';
+import { Receipt, Upload, PieChart, LogIn, LogOut, Menu, Save, BarChart, CreditCard, Home, ArrowLeftRight, TrendingUp, Target, Bot, Fingerprint } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdmin } from '@/contexts/AdminContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
@@ -137,6 +137,7 @@ const Navbar = () => {
             <NavLink to="/dashboard/upload" label="Upload" icon={Upload} color="text-violet-500" />
             <NavLink to="/dashboard/analyze" label="Basic Analysis" icon={PieChart} color="text-pink-700" />
             <NavLink to="/dashboard/saved" label="Saved" icon={Save} color="text-orange-700" />
+            <NavLink to="/dashboard/advanced-analysis" label="Advanced Analysis" icon={Fingerprint} color="text-amber-600" requiresFeature="advancedAnalysis" />
             <NavLink 
               to="/pricing" 
               label="Pricing" 
@@ -165,9 +166,21 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link to="/dashboard/advanced-analysis" className="flex items-center gap-2">
+                      <Fingerprint className="w-4 h-4 text-amber-600" />
+                      <span>Advanced Analysis</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/dashboard/financial-goals" className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-purple-500" />
                       <span>Financial Goals</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/expense-tracker" className="flex items-center gap-2">
+                      <Receipt className="w-4 h-4 text-blue-600" />
+                      <span>Expense Tracker</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>

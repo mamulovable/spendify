@@ -22,6 +22,7 @@ export const defaultLimits: SubscriptionLimits = {
   maxStatements: 5,
   maxSavedAnalyses: 10,
   hasAdvancedAnalytics: false,
+  advancedAnalysis: true, // Enabled for testing the new feature
   canCompare: false,
   hasFinancialGoals: false,
   hasAIFinancialAdvisor: false,
@@ -62,7 +63,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
           .from('subscriptions')
           .select('*, trial_ends_at, trial_type, card_added')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           throw error;
@@ -81,6 +82,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
               maxStatements: data.plan === 'pro' ? 20 : 5,
               maxSavedAnalyses: data.plan === 'pro' ? 50 : 10,
               hasAdvancedAnalytics: data.plan === 'pro',
+              advancedAnalysis: true, // Always enabled for testing
               canCompare: data.plan === 'pro',
               hasFinancialGoals: data.plan === 'pro',
               hasAIFinancialAdvisor: data.plan === 'pro',
@@ -93,12 +95,13 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
               maxStatements: data.plan === 'pro' ? 20 : 5,
               maxSavedAnalyses: data.plan === 'pro' ? 50 : 10,
               hasAdvancedAnalytics: data.plan === 'pro',
-              canCompare: data.plan === 'pro',
-              hasFinancialGoals: data.plan === 'pro',
-              hasAIFinancialAdvisor: data.plan === 'pro',
-              budgetPlanner: data.plan === 'pro',
+              advancedAnalysis: true, // Always enabled for testing
+              canCompare: data.plan === 'pro' || data.plan === 'enterprise',
+              hasFinancialGoals: data.plan === 'pro' || data.plan === 'enterprise',
+              hasAIFinancialAdvisor: data.plan === 'pro' || data.plan === 'enterprise',
+              budgetPlanner: data.plan === 'pro' || data.plan === 'enterprise',
             });
-            if (data.plan !== 'pro') {
+            if (data.plan !== 'pro' && data.plan !== 'enterprise') {
               setLimits(defaultLimits);
             }
           }
@@ -129,12 +132,31 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     try {
       const isTrialStart = trialOptions?.isTrialStart ?? false;
       const withCard = trialOptions?.withCard ?? false;
+      const now = new Date();
       const trialEndDate = isTrialStart ? getTrialEndDate(withCard).toISOString() : null;
 
+      // Check if subscription exists first
+      const { data: existingSubscription, error: fetchError } = await supabase
+        .from('subscriptions')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error('Error fetching subscription:', fetchError);
+        throw fetchError;
+      }
+
+      // Always provide NOT NULL fields
       const subscriptionData: any = {
         user_id: user.id,
         plan: planId,
-        updated_at: new Date().toISOString(),
+        updated_at: now.toISOString(),
+        status: 'active',
+        current_period_end: isTrialStart
+          ? trialEndDate // For trial, set to trial end
+          : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(), // For paid, 30 days from now
+        cancel_at_period_end: false,
       };
 
       if (isTrialStart) {
@@ -144,38 +166,61 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       } else {
         subscriptionData.trial_ends_at = null;
         subscriptionData.trial_type = null;
+        subscriptionData.card_added = false;
       }
 
-      const { error } = await supabase
-        .from('subscriptions')
-        .upsert(subscriptionData, { onConflict: 'user_id' });
+      console.log('Updating subscription with:', subscriptionData);
+      
+      let error;
+      if (existingSubscription) {
+        // Update existing subscription
+        const { error: updateError } = await supabase
+          .from('subscriptions')
+          .update(subscriptionData)
+          .eq('user_id', user.id);
+        error = updateError;
+      } else {
+        // Insert new subscription
+        const { error: insertError } = await supabase
+          .from('subscriptions')
+          .insert(subscriptionData);
+        error = insertError;
+      }
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error in supabase operation:', error);
+        throw error;
+      }
 
       setActivePlan(planId);
       setTrialEndsAt(isTrialStart && trialEndDate ? new Date(trialEndDate) : null);
       setLimits({
-        maxStatements: planId === 'pro' ? 20 : 5,
-        maxSavedAnalyses: planId === 'pro' ? 50 : 10,
-        hasAdvancedAnalytics: planId === 'pro',
-        canCompare: planId === 'pro',
-        hasFinancialGoals: planId === 'pro',
-        hasAIFinancialAdvisor: planId === 'pro',
-        budgetPlanner: planId === 'pro',
+        maxStatements: planId === 'enterprise' ? 100 : planId === 'pro' ? 20 : 5,
+        maxSavedAnalyses: planId === 'enterprise' ? 250 : planId === 'pro' ? 50 : 10,
+        hasAdvancedAnalytics: planId === 'enterprise' || planId === 'pro',
+        advancedAnalysis: true,
+        canCompare: planId === 'enterprise' || planId === 'pro',
+        hasFinancialGoals: planId === 'enterprise' || planId === 'pro',
+        hasAIFinancialAdvisor: planId === 'enterprise' || planId === 'pro',
+        budgetPlanner: planId === 'enterprise' || planId === 'pro',
       });
-      if (planId !== 'pro' && !isTrialStart) {
+      if (planId !== 'pro' && planId !== 'enterprise' && !isTrialStart) {
         setLimits(defaultLimits);
       }
 
       toast({
         title: isTrialStart ? "Trial Started" : "Subscription Updated",
-        description: isTrialStart ? `Your 7-day trial for the ${planId} plan has started.` : `Your subscription has been updated to the ${planId} plan.`,
+        description: isTrialStart ? `Your ${withCard ? '30' : '7'}-day trial for the ${planId} plan has started.` : `Your subscription has been updated to the ${planId} plan.`,
       });
     } catch (error) {
       console.error('Error updating subscription:', error);
+      // Log exact error details for debugging
+      if (typeof error === 'object' && error !== null) {
+        console.error('Full error object:', JSON.stringify(error));
+      }
       toast({
         title: "Subscription Update Failed",
-        description: error instanceof Error ? error.message : "Failed to update subscription",
+        description: error instanceof Error ? error.message : "Failed to update subscription. Please try again or contact support.",
         variant: "destructive",
       });
       throw error;
