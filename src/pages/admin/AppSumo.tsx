@@ -773,7 +773,11 @@ export default function AppSumo() {
     </div>
   );
 } 
-
+ //  Fetch redemption data
+  useEffect(() => {
+    fetchRedemptionData();
+  }, [timeRange]);
+  
   const fetchRedemptionData = async () => {
     setLoadingRedemptions(true);
     
