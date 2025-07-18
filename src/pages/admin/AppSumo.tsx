@@ -774,9 +774,6 @@ export default function AppSumo() {
   );
 } 
 
-    fetchRedemptionData();
-  }, [timeRange]);
-  
   const fetchRedemptionData = async () => {
     setLoadingRedemptions(true);
     
