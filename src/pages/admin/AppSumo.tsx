@@ -772,7 +772,8 @@ export default function AppSumo() {
       </Tabs>
     </div>
   );
-}  // 
+} 
+
 // Fetch redemption data
   useEffect(() => {
     fetchRedemptionData();
