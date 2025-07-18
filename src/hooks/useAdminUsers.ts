@@ -1,138 +1,189 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAdmin } from '@/contexts/AdminContext';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { adminUserService } from '@/services/adminUserService';
+import { AdminUser, AdminRole, AdminUserFormData, AdminRoleFormData } from '@/types/adminUser';
+import { toast } from '@/components/ui/use-toast';
 
-export interface AdminUser {
-  id: string;
-  email: string;
-  created_at: string;
-  last_sign_in_at: string | null;
-  subscription_status: string;
-  subscription_plan: string | null;
-  trial_ends_at: string | null;
-  current_period_end: string | null;
-  cancel_at_period_end: boolean;
-  document_count: number;
-  processed_documents: number;
-  is_suspended?: boolean;
-}
-
-interface UsersResponse {
-  users: AdminUser[];
-  loading: boolean;
-  error: Error | null;
-  totalCount: number;
-  refresh: () => Promise<void>;
-  suspendUser: (userId: string) => Promise<void>;
-  activateUser: (userId: string) => Promise<void>;
-  deleteUser: (userId: string) => Promise<void>;
-}
-
-export function useAdminUsers(
-  page: number = 1,
-  limit: number = 10,
-  searchQuery: string = ''
-): UsersResponse {
-  const { logActivity } = useAdmin();
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      let query = supabase
-        .from('admin_user_view')
-        .select('*', { count: 'exact' });
-
-      // Apply search filter if query exists
-      if (searchQuery) {
-        query = query.ilike('email', `%${searchQuery}%`);
-      }
-
-      // Apply pagination
-      const from = (page - 1) * limit;
-      const to = from + limit - 1;
-      query = query.range(from, to);
-
-      const { data, error: dbError, count } = await query;
-
-      if (dbError) throw dbError;
-
-      setUsers(data || []);
-      setTotalCount(count || 0);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      setError(err instanceof Error ? err : new Error('Failed to fetch users'));
-      await logActivity('error', 'user_management', { error: err.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const suspendUser = async (userId: string) => {
-    try {
-      const { error: dbError } = await supabase.rpc('suspend_user', {
-        target_user_id: userId,
+export const useAdminUsers = () => {
+  const queryClient = useQueryClient();
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [isCreatingRole, setIsCreatingRole] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const [editingRole, setEditingRole] = useState<AdminRole | null>(null);
+  
+  // Get all admin users
+  const {
+    data: adminUsers,
+    isLoading: isLoadingUsers,
+    error: usersError,
+    refetch: refetchUsers
+  } = useQuery({
+    queryKey: ['adminUsers'],
+    queryFn: () => adminUserService.getAdminUsers(),
+  });
+  
+  // Get all admin roles
+  const {
+    data: adminRoles,
+    isLoading: isLoadingRoles,
+    error: rolesError,
+    refetch: refetchRoles
+  } = useQuery({
+    queryKey: ['adminRoles'],
+    queryFn: () => adminUserService.getAdminRoles(),
+  });
+  
+  // Create admin user
+  const createAdminUserMutation = useMutation({
+    mutationFn: (userData: AdminUserFormData) => adminUserService.createAdminUser(userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      toast({
+        title: 'Admin user created',
+        description: 'The admin user has been created successfully.',
       });
-
-      if (dbError) throw dbError;
-
-      await logActivity('suspended', 'user', { user_id: userId });
-      await fetchUsers();
-    } catch (err) {
-      console.error('Error suspending user:', err);
-      throw err instanceof Error ? err : new Error('Failed to suspend user');
-    }
-  };
-
-  const activateUser = async (userId: string) => {
-    try {
-      const { error: dbError } = await supabase.rpc('activate_user', {
-        target_user_id: userId,
+      setIsCreatingUser(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error creating admin user',
+        description: error.message,
+        variant: 'destructive',
       });
-
-      if (dbError) throw dbError;
-
-      await logActivity('activated', 'user', { user_id: userId });
-      await fetchUsers();
-    } catch (err) {
-      console.error('Error activating user:', err);
-      throw err instanceof Error ? err : new Error('Failed to activate user');
-    }
-  };
-
-  const deleteUser = async (userId: string) => {
-    try {
-      const { error: dbError } = await supabase.rpc('delete_user', {
-        target_user_id: userId,
+    },
+  });
+  
+  // Update admin user
+  const updateAdminUserMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: AdminUserFormData }) => 
+      adminUserService.updateAdminUser(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      toast({
+        title: 'Admin user updated',
+        description: 'The admin user has been updated successfully.',
       });
-
-      if (dbError) throw dbError;
-
-      await logActivity('deleted', 'user', { user_id: userId });
-      await fetchUsers();
-    } catch (err) {
-      console.error('Error deleting user:', err);
-      throw err instanceof Error ? err : new Error('Failed to delete user');
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [page, limit, searchQuery]);
-
+      setEditingUser(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error updating admin user',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Delete admin user
+  const deleteAdminUserMutation = useMutation({
+    mutationFn: (id: string) => adminUserService.deleteAdminUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      toast({
+        title: 'Admin user deleted',
+        description: 'The admin user has been deleted successfully.',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error deleting admin user',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Create admin role
+  const createAdminRoleMutation = useMutation({
+    mutationFn: (roleData: AdminRoleFormData) => adminUserService.createAdminRole(roleData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRoles'] });
+      toast({
+        title: 'Admin role created',
+        description: 'The admin role has been created successfully.',
+      });
+      setIsCreatingRole(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error creating admin role',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Update admin role
+  const updateAdminRoleMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: AdminRoleFormData }) => 
+      adminUserService.updateAdminRole(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRoles'] });
+      toast({
+        title: 'Admin role updated',
+        description: 'The admin role has been updated successfully.',
+      });
+      setEditingRole(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error updating admin role',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Delete admin role
+  const deleteAdminRoleMutation = useMutation({
+    mutationFn: (id: string) => adminUserService.deleteAdminRole(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRoles'] });
+      toast({
+        title: 'Admin role deleted',
+        description: 'The admin role has been deleted successfully.',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error deleting admin role',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
   return {
-    users,
-    loading,
-    error,
-    totalCount,
-    refresh: fetchUsers,
-    suspendUser,
-    activateUser,
-    deleteUser,
+    // Admin users
+    adminUsers,
+    isLoadingUsers,
+    usersError,
+    refetchUsers,
+    isCreatingUser,
+    setIsCreatingUser,
+    editingUser,
+    setEditingUser,
+    createAdminUser: createAdminUserMutation.mutate,
+    updateAdminUser: updateAdminUserMutation.mutate,
+    deleteAdminUser: deleteAdminUserMutation.mutate,
+    isCreatingUserMutation: createAdminUserMutation.isPending,
+    isUpdatingUser: updateAdminUserMutation.isPending,
+    isDeletingUser: deleteAdminUserMutation.isPending,
+    
+    // Admin roles
+    adminRoles,
+    isLoadingRoles,
+    rolesError,
+    refetchRoles,
+    isCreatingRole,
+    setIsCreatingRole,
+    editingRole,
+    setEditingRole,
+    createAdminRole: createAdminRoleMutation.mutate,
+    updateAdminRole: updateAdminRoleMutation.mutate,
+    deleteAdminRole: deleteAdminRoleMutation.mutate,
+    isCreatingRoleMutation: createAdminRoleMutation.isPending,
+    isUpdatingRole: updateAdminRoleMutation.isPending,
+    isDeletingRole: deleteAdminRoleMutation.isPending,
   };
-}
+};

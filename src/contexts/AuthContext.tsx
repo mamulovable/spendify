@@ -1,124 +1,166 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { authService } from '@/services/authService';
 import { supabase } from '@/lib/supabase';
-import { User } from '@supabase/supabase-js';
-import { useToast } from '@/components/ui/use-toast';
+import { UserProfile, AuthState } from '@/types/auth';
 
-// Define a type for the onboarding data
-export interface OnboardingAnswers {
-  documentTypes?: string;
-  mainGoal?: string;
-  analysisFrequency?: string;
-  interestedTools?: string[];
-  selectedPlanId?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
+// Create the auth context
+export const AuthContext = createContext<{
+  user: UserProfile | null;
+  session: Session | null;
   loading: boolean;
+  error: Error | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<User | null>;
   signOut: () => Promise<void>;
-  updateUserOnboardingData: (onboardingData: OnboardingAnswers) => Promise<void>;
-}
+  isAppSumoUser: boolean;
+}>({
+  user: null,
+  session: null,
+  loading: true,
+  error: null,
+  signIn: async () => {},
+  signOut: async () => {},
+  isAppSumoUser: false,
+});
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Provider component that wraps the app and makes auth available
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [authState, setAuthState] = useState<AuthState>({
+    user: null,
+    session: null,
+    loading: true,
+    error: null,
+  });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  // Check if the user is an AppSumo user
+  const isAppSumoUser = !!authState.user?.user_metadata?.is_appsumo_user;
 
   useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // Get the initial session
+    const getInitialSession = async () => {
+      try {
+        const session = await authService.getSession();
+        
+        if (session) {
+          const { data: { user } } = await supabase.auth.getUser();
+          setAuthState({
+            user: user as UserProfile,
+            session,
+            loading: false,
+            error: null,
+          });
+        } else {
+          setAuthState({
+            user: null,
+            session: null,
+            loading: false,
+            error: null,
+          });
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error);
+        setAuthState({
+          user: null,
+          session: null,
+          loading: false,
+          error: error as Error,
+        });
+      }
+    };
 
-    // Listen for changes on auth state (logged in, signed out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    getInitialSession();
 
-    return () => subscription.unsubscribe();
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session) {
+          const { data: { user } } = await supabase.auth.getUser();
+          setAuthState({
+            user: user as UserProfile,
+            session,
+            loading: false,
+            error: null,
+          });
+        } else {
+          setAuthState({
+            user: null,
+            session: null,
+            loading: false,
+            error: null,
+          });
+        }
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
+  // Sign in function
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      toast({
-        title: "Sign In Error",
-        description: error.message || "Failed to sign in. Please check your credentials.",
-        variant: "destructive",
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: null }));
+      const { user, session } = await authService.loginUser({ email, password });
+      setAuthState({
+        user: user as UserProfile,
+        session,
+        loading: false,
+        error: null,
       });
+    } catch (error) {
+      console.error('Error signing in:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as Error,
+      }));
       throw error;
     }
   };
 
-  const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({ 
-      email, 
-      password,
-      // Options can be added here if needed in the future, like initial metadata
-    });
-    if (error) {
-      toast({
-        title: "Sign Up Error",
-        description: error.message || "Failed to create account. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    }
-    // The user object might be immediately available in data.user
-    // Or we rely on onAuthStateChange to update the user state
-    return data.user; // Return the user object or null
-  };
-
+  // Sign out function
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        title: "Sign Out Error",
-        description: error.message || "Failed to sign out.",
-        variant: "destructive",
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: null }));
+      await authService.signOut();
+      setAuthState({
+        user: null,
+        session: null,
+        loading: false,
+        error: null,
       });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as Error,
+      }));
       throw error;
     }
   };
 
-  // Function to update user's onboarding data in user_metadata
-  const updateUserOnboardingData = async (onboardingData: OnboardingAnswers) => {
-    const { data, error } = await supabase.auth.updateUser({
-      data: { onboarding_completed: true, ...onboardingData } // Store under user_metadata.data
-    });
-
-    if (error) {
-      toast({
-        title: "Onboarding Error",
-        description: error.message || "Failed to save onboarding information.",
-        variant: "destructive",
-      });
-      throw error;
-    }
-    // Optionally update local user state if needed, though onAuthStateChange might handle it if metadata updates trigger it.
-    // setUser(data.user); 
-    toast({
-      title: "Onboarding Complete!",
-      description: "Your preferences have been saved.",
-    });
+  // Context value
+  const value = {
+    user: authState.user,
+    session: authState.session,
+    loading: authState.loading,
+    error: authState.error,
+    signIn,
+    signOut,
+    isAppSumoUser,
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateUserOnboardingData }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
+// Custom hook to use the auth context
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+};

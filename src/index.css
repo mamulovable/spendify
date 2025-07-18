@@ -129,3 +129,18 @@
   transform: translateY(-10px);
   transition: opacity 300ms, transform 300ms;
 }
+
+/* AppSumo landing page styles */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}

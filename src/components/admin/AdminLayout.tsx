@@ -4,6 +4,7 @@ import { useAdmin } from '@/contexts/AdminContext';
 import { AdminSidebar } from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
 import { Loader2 } from 'lucide-react';
+import { Toaster } from '@/components/ui/toaster';
 
 export function AdminLayout() {
   const { isAdmin, isLoading } = useAdmin();
@@ -17,18 +18,21 @@ export function AdminLayout() {
   }
 
   if (!isAdmin) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <AdminHeader />
-      <div className="flex">
+      <div className="flex flex-1 h-[calc(100vh-4rem)]">
         <AdminSidebar />
-        <main className="flex-1 p-8">
-          <Outlet />
+        <main className="flex-1 overflow-auto">
+          <div className="container mx-auto p-6 max-w-7xl">
+            <Outlet />
+          </div>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

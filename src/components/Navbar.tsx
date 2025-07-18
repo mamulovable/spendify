@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Receipt, Upload, PieChart, LogIn, LogOut, Menu, Save, BarChart, CreditCard, Home, ArrowLeftRight, TrendingUp, Target, Bot, Fingerprint } from 'lucide-react';
+import { Receipt, Upload, PieChart, LogIn, LogOut, Menu, Save, BarChart, CreditCard, Home, ArrowLeftRight, TrendingUp, Target, Bot, Fingerprint, Gift } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdmin } from '@/contexts/AdminContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
@@ -110,7 +110,10 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <NavLink to="/auth" label="Sign In" icon={LogIn} />
+              <>
+                <NavLink to="/redeem" label="AppSumo Deal" icon={Gift} color="text-emerald-500" />
+                <NavLink to="/auth" label="Sign In" icon={LogIn} />
+              </>
             )}
           </nav>
         </div>
@@ -126,10 +129,55 @@ const Navbar = () => {
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-        <Link to="/" className="flex items-center gap-2">
-          <Receipt className="w-5 h-5 text-primary" />
-          <span className="text-lg font-semibold text-foreground hidden sm:inline">AI Expense Buddy</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[240px] sm:w-[300px]">
+              <div className="flex flex-col gap-6 mt-6">
+                <Link to="/" className="flex items-center gap-2">
+                  <Receipt className="w-6 h-6 text-primary" />
+                  <span className="text-xl font-semibold text-foreground">AI Expense Buddy</span>
+                </Link>
+                
+                <nav className="flex flex-col space-y-1">
+                  {user ? (
+                    <>
+                      <NavLink to="/dashboard" label="Dashboard" icon={Receipt} />
+                      <NavLink to="/dashboard/upload" label="Upload" icon={Upload} />
+                      <NavLink to="/dashboard/analyze" label="Analyze" icon={PieChart} />
+                      <NavLink to="/dashboard/saved" label="Saved" icon={Save} />
+                      <NavLink to="/dashboard/charts" label="Charts" icon={BarChart} />
+                      <NavLink to="/pricing" label="Pricing" icon={CreditCard} />
+                      <NavLink to="/billing" label="Billing" icon={Receipt} />
+                      {isAdmin && <NavLink to="/admin" label="Admin Panel" icon={Target} />}
+                      <div 
+                        className="flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer text-muted-foreground hover:bg-accent/10"
+                        onClick={() => signOut()}
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span>Sign Out</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <NavLink to="/redeem" label="AppSumo Deal" icon={Gift} color="text-emerald-500" />
+                      <NavLink to="/auth" label="Sign In" icon={LogIn} />
+                    </>
+                  )}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <Link to="/" className="flex items-center gap-2">
+            <Receipt className="w-5 h-5 text-primary" />
+            <span className="text-lg font-semibold text-foreground hidden sm:inline">AI Expense Buddy</span>
+          </Link>
+        </div>
         
         {user && (
           <nav className="hidden md:flex items-center space-x-1 overflow-x-auto">
@@ -220,12 +268,20 @@ const Navbar = () => {
               </DropdownMenu>
             </>
           ) : (
-            <Button asChild size="sm">
-              <Link to="/auth" className="gap-2">
-                <LogIn className="w-4 h-4" />
-                <span>Sign In</span>
-              </Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/redeem" className="gap-2">
+                  <Gift className="h-4 w-4" />
+                  <span className="hidden sm:inline">AppSumo Deal</span>
+                </Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/auth" className="gap-2">
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </Link>
+              </Button>
+            </div>
           )}
         </div>
       </div>

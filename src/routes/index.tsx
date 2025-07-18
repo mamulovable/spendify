@@ -1,8 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { AdminLayout } from '@/components/admin/AdminLayout';
-import { AdminProtectedRoute } from '@/components/admin/AdminProtectedRoute';
-import { AdminRoot } from '@/components/admin/AdminRoot';
 import Layout from '@/components/Layout';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AdminProvider } from '@/contexts/AdminContext';
@@ -17,6 +14,11 @@ import PaystackTest from '@/pages/PaystackTest';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ExpenseTracker from '@/pages/ExpenseTracker';
+import AppSumoRedeem from '@/pages/AppSumoRedeem';
+import { AdminRoot } from '@/components/admin/AdminRoot';
+
+// Import admin routes
+import adminRoutes from './adminRoutes';
 
 // Lazy load pages
 const DashboardHome = lazy(() => import('@/pages/DashboardHome'));
@@ -33,28 +35,6 @@ const Transactions = lazy(() => import('@/pages/Transactions'));
 const BudgetDashboard = lazy(() => import('@/pages/BudgetDashboard'));
 const BudgetForm = lazy(() => import('@/pages/BudgetForm'));
 
-// Lazy load admin pages
-const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard'));
-const AdminUsers = lazy(() => import('@/pages/admin/Users'));
-const AdminUserDetails = lazy(() => import('@/pages/admin/UserDetails'));
-const AdminSubscriptions = lazy(() => import('@/pages/admin/Subscriptions'));
-const AdminSubscriptionDetails = lazy(() => import('@/pages/admin/SubscriptionDetails'));
-const AdminPlans = lazy(() => import('@/pages/admin/Plans'));
-const AdminDocuments = lazy(() => import('@/pages/admin/Documents'));
-const AdminAnalytics = lazy(() => import('@/pages/admin/Analytics'));
-const AdminReports = lazy(() => import('@/pages/admin/Reports'));
-const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
-const AdminNotifications = lazy(() => import('@/pages/admin/Notifications'));
-
-import EmailTemplates from '@/pages/admin/EmailTemplates';
-import Campaigns from '@/pages/admin/Campaigns';
-import UserSegments from '@/pages/admin/UserSegments';
-import Backups from '@/pages/admin/Backups';
-import DataCleanup from '@/pages/admin/DataCleanup';
-import ReleaseNotes from '@/pages/admin/ReleaseNotes';
-import SystemUpdates from '@/pages/admin/SystemUpdates';
-const AdminLogin = lazy(() => import('@/pages/admin/Login'));
-
 const Features = lazy(() => import('@/pages/Features'));
 const About = lazy(() => import('@/pages/About'));
 const Blog = lazy(() => import('@/pages/Blog'));
@@ -62,7 +42,15 @@ const Contact = lazy(() => import('@/pages/Contact'));
 const ThankYou = lazy(() => import('@/pages/ThankYou'));
 const FAQ = lazy(() => import('@/pages/FAQ'));
 
-const router = createBrowserRouter([
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center h-full min-h-[200px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Main application routes
+const appRoutes = [
   {
     element: (
       <AuthProvider>
@@ -83,27 +71,27 @@ const router = createBrowserRouter([
       },
       {
         path: '/features',
-        element: <Suspense fallback={null}><Features /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><Features /></Suspense>
       },
       {
         path: '/about',
-        element: <Suspense fallback={null}><About /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><About /></Suspense>
       },
       {
         path: '/blog',
-        element: <Suspense fallback={null}><Blog /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><Blog /></Suspense>
       },
       {
         path: '/contact',
-        element: <Suspense fallback={null}><Contact /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><Contact /></Suspense>
       },
       {
         path: '/thankyou',
-        element: <Suspense fallback={null}><ThankYou /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><ThankYou /></Suspense>
       },
       {
         path: '/faq',
-        element: <Suspense fallback={null}><FAQ /></Suspense>
+        element: <Suspense fallback={<LoadingSpinner />}><FAQ /></Suspense>
       },
       {
         path: '/auth',
@@ -123,55 +111,55 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><DashboardHome /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><DashboardHome /></Suspense>
           },
           {
             path: 'upload',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Upload /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><Upload /></Suspense>
           },
           {
             path: 'analyze',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Analyze /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><Analyze /></Suspense>
           },
           {
             path: 'saved',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><SavedAnalyses /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><SavedAnalyses /></Suspense>
           },
           {
             path: 'charts',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Charts /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><Charts /></Suspense>
           },
           {
             path: 'compare',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Compare /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><Compare /></Suspense>
           },
           {
             path: 'advanced-analytics',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdvancedAnalytics /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><AdvancedAnalytics /></Suspense>
           },
           {
             path: 'advanced-analysis',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdvancedAnalysis /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><AdvancedAnalysis /></Suspense>
           },
           {
             path: 'financial-goals',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><FinancialGoals /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><FinancialGoals /></Suspense>
           },
           {
             path: 'ai-advisor',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AIFinancialAdvisor /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><AIFinancialAdvisor /></Suspense>
           },
           {
             path: 'transactions',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Transactions /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><Transactions /></Suspense>
           },
           {
             path: 'budgets',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><BudgetDashboard /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><BudgetDashboard /></Suspense>
           },
           {
             path: 'budgets/:id',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><BudgetForm /></Suspense>
+            element: <Suspense fallback={<LoadingSpinner />}><BudgetForm /></Suspense>
           }
         ]
       },
@@ -184,13 +172,17 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><ExpenseTracker /></ProtectedRoute>
       },
       {
+        path: '/redeem',
+        element: <AppSumoRedeem />
+      },
+      {
         path: '*',
         element: <NotFound />
       }
     ]
   },
 
-  // Admin routes
+  // Admin routes wrapper
   {
     path: '/admin',
     element: (
@@ -205,95 +197,10 @@ const router = createBrowserRouter([
         </AdminProvider>
       </AuthProvider>
     ),
-    children: [
-      {
-        path: 'login',
-        element: <AdminLogin />,
-      },
-      {
-        path: '',
-        element: (
-          <AdminProtectedRoute>
-            <AdminLayout />
-          </AdminProtectedRoute>
-        ),
-        children: [
-          {
-            index: true,
-            element: <AdminDashboard />,
-          },
-          {
-            path: 'users',
-            element: <AdminUsers />,
-          },
-          {
-            path: 'users/:userId',
-            element: <AdminUserDetails />,
-          },
-          {
-            path: 'subscriptions',
-            element: <AdminSubscriptions />,
-          },
-          {
-            path: 'subscriptions/:subscriptionId',
-            element: <AdminSubscriptionDetails />,
-          },
-          {
-            path: 'plans',
-            element: <AdminPlans />,
-          },
-          {
-            path: 'documents',
-            element: <AdminDocuments />,
-          },
-          {
-            path: 'analytics',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminAnalytics /></Suspense>,
-          },
-          {
-            path: 'reports',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminReports /></Suspense>,
-          },
-          {
-            path: 'settings',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminSettings /></Suspense>,
-          },
-          {
-            path: 'notifications',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><AdminNotifications /></Suspense>,
-          },
-          {
-            path: 'email-templates',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><EmailTemplates /></Suspense>,
-          },
-          {
-            path: 'campaigns',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Campaigns /></Suspense>,
-          },
-          {
-            path: 'user-segments',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><UserSegments /></Suspense>,
-          },
-          {
-            path: 'backups',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><Backups /></Suspense>,
-          },
-          {
-            path: 'data-cleanup',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><DataCleanup /></Suspense>,
-          },
-          {
-            path: 'release-notes',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><ReleaseNotes /></Suspense>,
-          },
-          {
-            path: 'system-updates',
-            element: <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>}><SystemUpdates /></Suspense>,
-          }
-        ]
-      }
-    ]
+    children: adminRoutes[0].children
   }
-]);
+];
+
+const router = createBrowserRouter(appRoutes);
 
 export default router;

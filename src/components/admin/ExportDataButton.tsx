@@ -1,114 +1,68 @@
-import React, { useState } from 'react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from '@/components/ui/button';
-import {
-  Download,
-  FileSpreadsheet,
-  FileJson,
-  FileText,
-  Loader2
-} from 'lucide-react';
-import { exportData, prepareAnalyticsDataForExport, type ExportFormat } from '@/lib/exportUtils';
-import { useToast } from '@/hooks/useToast';
+import React from 'react';
+import { Button, ButtonProps } from '@/components/ui/button';
 
 interface ExportDataButtonProps {
   data: any[];
-  dataType: 'userGrowth' | 'revenue' | 'retention' | 'documentProcessing' | 'featureUsage';
-  className?: string;
-  disabled?: boolean;
+  filename: string;
+  buttonProps?: ButtonProps;
+  children: React.ReactNode;
 }
 
-export function ExportDataButton({ 
-  data, 
-  dataType, 
-  className = "", 
-  disabled = false 
+export function ExportDataButton({
+  data,
+  filename,
+  buttonProps,
+  children
 }: ExportDataButtonProps) {
-  const [exporting, setExporting] = useState(false);
-  const { toast } = useToast();
-
-  const handleExport = async (format: ExportFormat) => {
+  const handleExport = () => {
     if (!data || data.length === 0) {
-      toast({
-        title: "No data to export",
-        description: "There is currently no data available for export.",
-        variant: "destructive",
-      });
+      console.error('No data to export');
       return;
     }
-
-    setExporting(true);
+    
     try {
-      const preparedData = prepareAnalyticsDataForExport(data, dataType);
-      const timestamp = new Date().toISOString().split('T')[0];
-      const fileName = `spendify_${dataType}_${timestamp}`;
+      // Convert data to CSV
+      const headers = Object.keys(data[0]);
+      const csvRows = [
+        // Headers row
+        headers.join(','),
+        
+        // Data rows
+        ...data.map(row => 
+          headers.map(header => {
+            const value = row[header];
+            // Handle special cases (null, undefined, objects, etc.)
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'object') return JSON.stringify(value).replace(/"/g, '""');
+            if (typeof value === 'string') return `"${value.replace(/"/g, '""')}"`;
+            return value;
+          }).join(',')
+        )
+      ];
       
-      exportData(preparedData, fileName, format);
+      const csvContent = csvRows.join('\n');
       
-      toast({
-        title: "Export successful",
-        description: `Data has been exported as ${format.toUpperCase()}.`,
-      });
+      // Create a blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${filename}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
     } catch (error) {
-      console.error('Export failed:', error);
-      toast({
-        title: "Export failed",
-        description: "An error occurred while exporting data. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setExporting(false);
+      console.error('Error exporting data:', error);
     }
   };
-
-  const formatLabel = (type: string): string => {
-    return type
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, (str) => str.toUpperCase())
-      .replace('User Growth', 'User Data')
-      .replace('Document Processing', 'Document Data');
-  };
-
+  
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className={className}
-          disabled={disabled || exporting || data.length === 0}
-        >
-          {exporting ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-          ) : (
-            <Download className="h-4 w-4 mr-2" />
-          )}
-          Export {formatLabel(dataType)}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Choose Format</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleExport('csv')}>
-          <FileText className="h-4 w-4 mr-2" />
-          CSV
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('xlsx')}>
-          <FileSpreadsheet className="h-4 w-4 mr-2" />
-          Excel
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('json')}>
-          <FileJson className="h-4 w-4 mr-2" />
-          JSON
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button onClick={handleExport} {...buttonProps}>
+      {children}
+    </Button>
   );
 }
