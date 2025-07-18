@@ -774,8 +774,6 @@ export default function AppSumo() {
   );
 } 
 
-// Fetch redemption data
-  useEffect(() => {
     fetchRedemptionData();
   }, [timeRange]);
   
