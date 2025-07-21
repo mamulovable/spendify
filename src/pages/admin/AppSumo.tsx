@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,10 +32,8 @@ import {
 import { 
   Search, 
   RefreshCw, 
-  Filter, 
   Download, 
   Upload, 
-  Plus, 
   CheckCircle, 
   XCircle, 
   Clock,
@@ -43,9 +41,9 @@ import {
   BarChart,
   Eye,
   MoreHorizontal,
-  Calendar
+  User
 } from 'lucide-react';
-import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
+import { format, subDays, startOfMonth } from 'date-fns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   DropdownMenu, 
@@ -55,7 +53,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AppSumoMetricsChart } from '@/components/admin/AppSumoMetricsChart';
 import { AppSumoRedemptionDetails, AppSumoRedemption } from '@/components/admin/AppSumoRedemptionDetails';
-import { toast } from 'sonner';
 import { toast } from 'sonner';
 
 // AppSumo types
@@ -352,6 +349,208 @@ export default function AppSumo() {
       </div>
     );
   }
+  
+  // Fetch redemption data
+  useEffect(() => {
+    fetchRedemptionData();
+  }, [timeRange]);
+  
+  const fetchRedemptionData = async () => {
+    setLoadingRedemptions(true);
+    
+    try {
+      // Calculate date range based on selected time range
+      const now = new Date();
+      let startDate: Date;
+      
+      switch (timeRange) {
+        case '7d':
+          startDate = subDays(now, 7);
+          break;
+        case '30d':
+          startDate = subDays(now, 30);
+          break;
+        case '90d':
+          startDate = subDays(now, 90);
+          break;
+        case 'month':
+          startDate = startOfMonth(now);
+          break;
+        default:
+          startDate = subDays(now, 30);
+      }
+      
+      // Format dates for API calls
+      const startDateStr = format(startDate, 'yyyy-MM-dd');
+      const endDateStr = format(now, 'yyyy-MM-dd');
+      
+      // Fetch redemption data
+      const { data, error } = await supabase
+        .from('appsumo_redemptions')
+        .select('*')
+        .gte('redeemed_at', startDateStr)
+        .lte('redeemed_at', endDateStr)
+        .order('redeemed_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      if (data) {
+        setRedemptions(data as AppSumoRedemption[]);
+        
+        // Process data for chart
+        const dailyData = processRedemptionDataForChart(data);
+        setRedemptionData(dailyData);
+      }
+    } catch (err) {
+      console.error('Error fetching redemption data:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to load redemption data. Please try again.',
+        variant: 'destructive',
+      });
+      
+      // Set mock data for demonstration
+      setMockRedemptionData();
+    } finally {
+      setLoadingRedemptions(false);
+    }
+  };
+  
+  // Process redemption data for chart
+  const processRedemptionDataForChart = (redemptions: AppSumoRedemption[]) => {
+    const dateMap = new Map<string, { date: string; count: number; }>();
+    
+    // Get date range
+    const now = new Date();
+    let startDate: Date;
+    
+    switch (timeRange) {
+      case '7d':
+        startDate = subDays(now, 7);
+        break;
+      case '30d':
+        startDate = subDays(now, 30);
+        break;
+      case '90d':
+        startDate = subDays(now, 90);
+        break;
+      case 'month':
+        startDate = startOfMonth(now);
+        break;
+      default:
+        startDate = subDays(now, 30);
+    }
+    
+    // Initialize all dates in range
+    let currentDate = new Date(startDate);
+    while (currentDate <= now) {
+      const dateStr = format(currentDate, 'yyyy-MM-dd');
+      dateMap.set(dateStr, { date: dateStr, count: 0 });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // Count redemptions by date
+    redemptions.forEach(redemption => {
+      if (redemption.redeemed_at) {
+        const dateStr = format(new Date(redemption.redeemed_at), 'yyyy-MM-dd');
+        if (dateMap.has(dateStr)) {
+          const entry = dateMap.get(dateStr);
+          if (entry) {
+            entry.count += 1;
+            dateMap.set(dateStr, entry);
+          }
+        }
+      }
+    });
+    
+    // Convert map to array and sort by date
+    return Array.from(dateMap.values()).sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  };
+  
+  // Set mock redemption data
+  const setMockRedemptionData = () => {
+    const mockRedemptions: AppSumoRedemption[] = [
+      {
+        id: '1',
+        code: 'SUMO-ABCD-1234',
+        user_id: 'user1',
+        user_email: 'john.doe@example.com',
+        redeemed_at: '2023-07-15T14:30:00Z',
+        plan_type: 'ltd_solo',
+        status: 'active',
+        is_upgrade: false
+      },
+      {
+        id: '2',
+        code: 'SUMO-EFGH-5678',
+        user_id: 'user2',
+        user_email: 'jane.smith@example.com',
+        redeemed_at: '2023-07-10T09:15:00Z',
+        plan_type: 'ltd_pro',
+        status: 'active',
+        is_upgrade: true
+      }
+    ];
+    
+    setRedemptions(mockRedemptions);
+    
+    // Generate mock chart data
+    const now = new Date();
+    const mockChartData = [];
+    
+    for (let i = 30; i >= 0; i--) {
+      const date = format(subDays(now, i), 'yyyy-MM-dd');
+      mockChartData.push({
+        date,
+        count: Math.floor(Math.random() * 5)
+      });
+    }
+    
+    setRedemptionData(mockChartData);
+  };
+  
+  // Handle view redemption details
+  const handleViewRedemptionDetails = (redemption: AppSumoRedemption) => {
+    setSelectedRedemption(redemption);
+    setIsRedemptionDetailsOpen(true);
+  };
+  
+  // Handle view user profile
+  const handleViewUserProfile = (userId: string) => {
+    if (userId) {
+      // Navigate to user details page
+      window.location.href = `/admin/users/${userId}`;
+    }
+  };
+  
+  // Handle export redemptions
+  const handleExportRedemptions = () => {
+    // Create CSV content
+    const headers = ['Date', 'Code', 'User', 'Plan', 'Status', 'Upgrade'];
+    const csvContent = [
+      headers.join(','),
+      ...redemptions.map(r => [
+        formatDate(r.redeemed_at),
+        r.code,
+        r.user_email || '',
+        r.plan_type,
+        r.status,
+        r.is_upgrade ? 'Yes' : 'No'
+      ].join(','))
+    ].join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `appsumo-redemptions-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   
   return (
     <div className="space-y-6">
@@ -772,234 +971,4 @@ export default function AppSumo() {
       </Tabs>
     </div>
   );
-  
-  // Fetch redemption data
-  useEffect(() => {
-    fetchRedemptionData();
-  }, [timeRange]);
-  
-  const fetchRedemptionData = async () => {
-    setLoadingRedemptions(true);
-    
-    try {
-      // Calculate date range based on selected time range
-      const now = new Date();
-      let startDate: Date;
-      
-      switch (timeRange) {
-        case '7d':
-          startDate = subDays(now, 7);
-          break;
-        case '30d':
-          startDate = subDays(now, 30);
-          break;
-        case '90d':
-          startDate = subDays(now, 90);
-          break;
-        case 'month':
-          startDate = startOfMonth(now);
-          break;
-        default:
-          startDate = subDays(now, 30);
-      }
-      
-      // Format dates for API calls
-      const startDateStr = format(startDate, 'yyyy-MM-dd');
-      const endDateStr = format(now, 'yyyy-MM-dd');
-      
-      // Fetch redemption data
-      const { data, error } = await supabase
-        .from('appsumo_redemptions')
-        .select(`
-          id,
-          code,
-          user_id,
-          redemption_date,
-          plan_type,
-          status,
-          is_upgrade,
-          previous_plan,
-          ip_address,
-          user_agent,
-          auth.users!user_id(email)
-        `)
-        .gte('redemption_date', startDateStr)
-        .lte('redemption_date', endDateStr)
-        .order('redemption_date', { ascending: false });
-      
-      if (error) throw error;
-      
-      if (data) {
-        // Process data for redemption list
-        const processedRedemptions: AppSumoRedemption[] = data.map(item => ({
-          id: item.id,
-          code: item.code,
-          user_id: item.user_id,
-          user_email: item.users?.email,
-          plan_type: item.plan_type,
-          redeemed_at: item.redemption_date,
-          ip_address: item.ip_address,
-          user_agent: item.user_agent,
-          is_upgrade: item.is_upgrade,
-          previous_plan: item.previous_plan,
-          status: item.status
-        }));
-        
-        setRedemptions(processedRedemptions);
-        
-        // Process data for charts
-        const chartData = processRedemptionDataForCharts(data);
-        setRedemptionData(chartData);
-      }
-    } catch (err) {
-      console.error('Error fetching redemption data:', err);
-      toast({
-        title: 'Error',
-        description: 'Failed to load redemption data. Please try again.',
-        variant: 'destructive',
-      });
-      
-      // Set mock data for demonstration
-      setMockRedemptionData();
-    } finally {
-      setLoadingRedemptions(false);
-    }
-  };
-  
-  // Process redemption data for charts
-  const processRedemptionDataForCharts = (data: any[]) => {
-    // Group by date and plan type
-    const groupedData: Record<string, Record<string, number>> = {};
-    
-    data.forEach(item => {
-      const date = format(new Date(item.redemption_date), 'yyyy-MM-dd');
-      if (!groupedData[date]) {
-        groupedData[date] = {};
-      }
-      
-      if (!groupedData[date][item.plan_type]) {
-        groupedData[date][item.plan_type] = 0;
-      }
-      
-      groupedData[date][item.plan_type]++;
-    });
-    
-    // Convert to array format for charts
-    const chartData = Object.entries(groupedData).map(([date, plans]) => {
-      return Object.entries(plans).map(([plan_type, count]) => ({
-        date,
-        plan_type,
-        count
-      }));
-    }).flat();
-    
-    return chartData;
-  };
-  
-  // Set mock redemption data for demonstration
-  const setMockRedemptionData = () => {
-    const mockRedemptions: AppSumoRedemption[] = [];
-    const mockChartData = [];
-    const now = new Date();
-    const planTypes = ['ltd_solo', 'ltd_pro'];
-    const userEmails = [
-      'john.doe@example.com',
-      'jane.smith@example.com',
-      'robert.johnson@example.com',
-      'sarah.williams@example.com',
-      'michael.brown@example.com'
-    ];
-    
-    // Generate 20 mock redemptions
-    for (let i = 0; i < 20; i++) {
-      const daysAgo = Math.floor(Math.random() * 30);
-      const redemptionDate = format(subDays(now, daysAgo), 'yyyy-MM-dd');
-      const planType = planTypes[Math.floor(Math.random() * planTypes.length)];
-      const userEmail = userEmails[Math.floor(Math.random() * userEmails.length)];
-      const isUpgrade = Math.random() > 0.7;
-      
-      mockRedemptions.push({
-        id: `red-${i}`,
-        code: `SUMO-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-        user_id: `user-${i}`,
-        user_email: userEmail,
-        plan_type: planType,
-        redeemed_at: redemptionDate,
-        ip_address: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-        is_upgrade: isUpgrade,
-        previous_plan: isUpgrade ? 'premium' : undefined,
-        status: 'active'
-      });
-      
-      // Add to chart data
-      mockChartData.push({
-        date: redemptionDate,
-        plan_type: planType,
-        count: 1
-      });
-    }
-    
-    setRedemptions(mockRedemptions);
-    setRedemptionData(mockChartData);
-  };
-  
-  // Handle viewing redemption details
-  const handleViewRedemptionDetails = (redemption: AppSumoRedemption) => {
-    setSelectedRedemption(redemption);
-    setIsRedemptionDetailsOpen(true);
-  };
-  
-  // Handle viewing user profile
-  const handleViewUserProfile = (userId: string) => {
-    // Navigate to user profile page
-    window.location.href = `/admin/users/${userId}`;
-  };
-  
-  // Export redemption data to CSV
-  const handleExportRedemptions = () => {
-    if (redemptions.length === 0) {
-      toast({
-        title: 'No data to export',
-        description: 'There are no redemptions to export.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    // Create CSV content
-    const headers = ['Code', 'User Email', 'Plan Type', 'Redemption Date', 'Status', 'Is Upgrade', 'Previous Plan'];
-    const csvRows = [
-      headers.join(','),
-      ...redemptions.map(r => [
-        r.code,
-        r.user_email || '',
-        r.plan_type,
-        r.redeemed_at,
-        r.status,
-        r.is_upgrade ? 'Yes' : 'No',
-        r.previous_plan || ''
-      ].join(','))
-    ];
-    
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    
-    // Create download link and trigger download
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `appsumo-redemptions-${format(new Date(), 'yyyy-MM-dd')}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-  const handleViewRedemptionDetails = (redemption: AppSumoRedemption) => {
-    setSelectedRedemption(redemption);
-    setIsRedemptionDetailsOpen(true);
-  };
-
-  const handleViewUserProfile = (userId: string) => {
-    // Navigate to user profile page
-    window.open(`/admin/users/${userId}`, '_blank');
-  };
 }
