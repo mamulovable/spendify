@@ -993,3 +993,13 @@ export default function AppSumo() {
     link.click();
     document.body.removeChild(link);
   };
+  const handleViewRedemptionDetails = (redemption: AppSumoRedemption) => {
+    setSelectedRedemption(redemption);
+    setIsRedemptionDetailsOpen(true);
+  };
+
+  const handleViewUserProfile = (userId: string) => {
+    // Navigate to user profile page
+    window.open(`/admin/users/${userId}`, '_blank');
+  };
+}
