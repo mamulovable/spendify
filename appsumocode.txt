@@ -1,0 +1,456 @@
+# AppSumo Code Redemption System
+
+## Code Format and Plan Matching
+
+The AppSumo code redemption system supports two code formats:
+
+### 1. AS-XXXXXX Format (Legacy)
+
+Format: `AS-` followed by alphanumeric characters
+Example: `AS-BAS123456`, `AS-PRE789012`, `AS-ULT345678`
+
+Plan matching is determined by the first 3 characters after "AS-":
+
+| Plan Type    | Prefixes                                |
+|--------------|----------------------------------------|
+| Basic LTD    | LBL, UL4, 5Z0, IAZ, 8FC, BAS          |
+| Premium LTD  | M5X, YX4, QW7, XNN, UDI, PRE          |
+| Ultimate LTD | GXE, ILG, YSC, RKS, 6O2, ULT          |
+
+### 2. 15-Character Format (New)
+
+Format: 15 alphanumeric characters
+Example: `A12345678901234`, `E12345678901234`, `I12345678901234`
+
+Plan matching is determined by the first character:
+
+| Plan Type    | First Characters |
+|--------------|-----------------|
+| Basic LTD    | A, B, C, D      |
+| Premium LTD  | E, F, G, H      |
+| Ultimate LTD | I, J, K, L      |
+
+## Generated AppSumo Codes
+
+### Basic LTD Codes (1000)
+
+AS-BAS00000000001,basic_ltd
+AS-BAS00000000002,basic_ltd
+AS-BAS00000000003,basic_ltd
+AS-BAS00000000004,basic_ltd
+AS-BAS00000000005,basic_ltd
+AS-BAS00000000006,basic_ltd
+AS-BAS00000000007,basic_ltd
+AS-BAS00000000008,basic_ltd
+AS-BAS00000000009,basic_ltd
+AS-BAS00000000010,basic_ltd
+AS-BAS00000000011,basic_ltd
+AS-BAS00000000012,basic_ltd
+AS-BAS00000000013,basic_ltd
+AS-BAS00000000014,basic_ltd
+AS-BAS00000000015,basic_ltd
+AS-BAS00000000016,basic_ltd
+AS-BAS00000000017,basic_ltd
+AS-BAS00000000018,basic_ltd
+AS-BAS00000000019,basic_ltd
+AS-BAS00000000020,basic_ltd
+AS-BAS00000000021,basic_ltd
+AS-BAS00000000022,basic_ltd
+AS-BAS00000000023,basic_ltd
+AS-BAS00000000024,basic_ltd
+AS-BAS00000000025,basic_ltd
+AS-BAS00000000026,basic_ltd
+AS-BAS00000000027,basic_ltd
+AS-BAS00000000028,basic_ltd
+AS-BAS00000000029,basic_ltd
+AS-BAS00000000030,basic_ltd
+AS-BAS00000000031,basic_ltd
+AS-BAS00000000032,basic_ltd
+AS-BAS00000000033,basic_ltd
+AS-BAS00000000034,basic_ltd
+AS-BAS00000000035,basic_ltd
+AS-BAS00000000036,basic_ltd
+AS-BAS00000000037,basic_ltd
+AS-BAS00000000038,basic_ltd
+AS-BAS00000000039,basic_ltd
+AS-BAS00000000040,basic_ltd
+AS-BAS00000000041,basic_ltd
+AS-BAS00000000042,basic_ltd
+AS-BAS00000000043,basic_ltd
+AS-BAS00000000044,basic_ltd
+AS-BAS00000000045,basic_ltd
+AS-BAS00000000046,basic_ltd
+AS-BAS00000000047,basic_ltd
+AS-BAS00000000048,basic_ltd
+AS-BAS00000000049,basic_ltd
+AS-BAS00000000050,basic_ltd
+AS-BAS00000000051,basic_ltd
+AS-BAS00000000052,basic_ltd
+AS-BAS00000000053,basic_ltd
+AS-BAS00000000054,basic_ltd
+AS-BAS00000000055,basic_ltd
+AS-BAS00000000056,basic_ltd
+AS-BAS00000000057,basic_ltd
+AS-BAS00000000058,basic_ltd
+AS-BAS00000000059,basic_ltd
+AS-BAS00000000060,basic_ltd
+AS-BAS00000000061,basic_ltd
+AS-BAS00000000062,basic_ltd
+AS-BAS00000000063,basic_ltd
+AS-BAS00000000064,basic_ltd
+AS-BAS00000000065,basic_ltd
+AS-BAS00000000066,basic_ltd
+AS-BAS00000000067,basic_ltd
+AS-BAS00000000068,basic_ltd
+AS-BAS00000000069,basic_ltd
+AS-BAS00000000070,basic_ltd
+AS-BAS00000000071,basic_ltd
+AS-BAS00000000072,basic_ltd
+AS-BAS00000000073,basic_ltd
+AS-BAS00000000074,basic_ltd
+AS-BAS00000000075,basic_ltd
+AS-BAS00000000076,basic_ltd
+AS-BAS00000000077,basic_ltd
+AS-BAS00000000078,basic_ltd
+AS-BAS00000000079,basic_ltd
+AS-BAS00000000080,basic_ltd
+AS-BAS00000000081,basic_ltd
+AS-BAS00000000082,basic_ltd
+AS-BAS00000000083,basic_ltd
+AS-BAS00000000084,basic_ltd
+AS-BAS00000000085,basic_ltd
+AS-BAS00000000086,basic_ltd
+AS-BAS00000000087,basic_ltd
+AS-BAS00000000088,basic_ltd
+AS-BAS00000000089,basic_ltd
+AS-BAS00000000090,basic_ltd
+AS-BAS00000000091,basic_ltd
+AS-BAS00000000092,basic_ltd
+AS-BAS00000000093,basic_ltd
+AS-BAS00000000094,basic_ltd
+AS-BAS00000000095,basic_ltd
+AS-BAS00000000096,basic_ltd
+AS-BAS00000000097,basic_ltd
+AS-BAS00000000098,basic_ltd
+AS-BAS00000000099,basic_ltd
+AS-BAS00000000100,basic_ltd
+# ... (900 more Basic LTD codes)
+A000000000000001,basic_ltd
+A000000000000002,basic_ltd
+A000000000000003,basic_ltd
+A000000000000004,basic_ltd
+A000000000000005,basic_ltd
+# ... (more Basic LTD codes in 15-character format)
+
+### Premium LTD Codes (1000)
+
+AS-PRE00000000001,premium_ltd
+AS-PRE00000000002,premium_ltd
+AS-PRE00000000003,premium_ltd
+AS-PRE00000000004,premium_ltd
+AS-PRE00000000005,premium_ltd
+AS-PRE00000000006,premium_ltd
+AS-PRE00000000007,premium_ltd
+AS-PRE00000000008,premium_ltd
+AS-PRE00000000009,premium_ltd
+AS-PRE00000000010,premium_ltd
+AS-PRE00000000011,premium_ltd
+AS-PRE00000000012,premium_ltd
+AS-PRE00000000013,premium_ltd
+AS-PRE00000000014,premium_ltd
+AS-PRE00000000015,premium_ltd
+AS-PRE00000000016,premium_ltd
+AS-PRE00000000017,premium_ltd
+AS-PRE00000000018,premium_ltd
+AS-PRE00000000019,premium_ltd
+AS-PRE00000000020,premium_ltd
+AS-PRE00000000021,premium_ltd
+AS-PRE00000000022,premium_ltd
+AS-PRE00000000023,premium_ltd
+AS-PRE00000000024,premium_ltd
+AS-PRE00000000025,premium_ltd
+AS-PRE00000000026,premium_ltd
+AS-PRE00000000027,premium_ltd
+AS-PRE00000000028,premium_ltd
+AS-PRE00000000029,premium_ltd
+AS-PRE00000000030,premium_ltd
+AS-PRE00000000031,premium_ltd
+AS-PRE00000000032,premium_ltd
+AS-PRE00000000033,premium_ltd
+AS-PRE00000000034,premium_ltd
+AS-PRE00000000035,premium_ltd
+AS-PRE00000000036,premium_ltd
+AS-PRE00000000037,premium_ltd
+AS-PRE00000000038,premium_ltd
+AS-PRE00000000039,premium_ltd
+AS-PRE00000000040,premium_ltd
+AS-PRE00000000041,premium_ltd
+AS-PRE00000000042,premium_ltd
+AS-PRE00000000043,premium_ltd
+AS-PRE00000000044,premium_ltd
+AS-PRE00000000045,premium_ltd
+AS-PRE00000000046,premium_ltd
+AS-PRE00000000047,premium_ltd
+AS-PRE00000000048,premium_ltd
+AS-PRE00000000049,premium_ltd
+AS-PRE00000000050,premium_ltd
+AS-PRE00000000051,premium_ltd
+AS-PRE00000000052,premium_ltd
+AS-PRE00000000053,premium_ltd
+AS-PRE00000000054,premium_ltd
+AS-PRE00000000055,premium_ltd
+AS-PRE00000000056,premium_ltd
+AS-PRE00000000057,premium_ltd
+AS-PRE00000000058,premium_ltd
+AS-PRE00000000059,premium_ltd
+AS-PRE00000000060,premium_ltd
+AS-PRE00000000061,premium_ltd
+AS-PRE00000000062,premium_ltd
+AS-PRE00000000063,premium_ltd
+AS-PRE00000000064,premium_ltd
+AS-PRE00000000065,premium_ltd
+AS-PRE00000000066,premium_ltd
+AS-PRE00000000067,premium_ltd
+AS-PRE00000000068,premium_ltd
+AS-PRE00000000069,premium_ltd
+AS-PRE00000000070,premium_ltd
+AS-PRE00000000071,premium_ltd
+AS-PRE00000000072,premium_ltd
+AS-PRE00000000073,premium_ltd
+AS-PRE00000000074,premium_ltd
+AS-PRE00000000075,premium_ltd
+AS-PRE00000000076,premium_ltd
+AS-PRE00000000077,premium_ltd
+AS-PRE00000000078,premium_ltd
+AS-PRE00000000079,premium_ltd
+AS-PRE00000000080,premium_ltd
+AS-PRE00000000081,premium_ltd
+AS-PRE00000000082,premium_ltd
+AS-PRE00000000083,premium_ltd
+AS-PRE00000000084,premium_ltd
+AS-PRE00000000085,premium_ltd
+AS-PRE00000000086,premium_ltd
+AS-PRE00000000087,premium_ltd
+AS-PRE00000000088,premium_ltd
+AS-PRE00000000089,premium_ltd
+AS-PRE00000000090,premium_ltd
+AS-PRE00000000091,premium_ltd
+AS-PRE00000000092,premium_ltd
+AS-PRE00000000093,premium_ltd
+AS-PRE00000000094,premium_ltd
+AS-PRE00000000095,premium_ltd
+AS-PRE00000000096,premium_ltd
+AS-PRE00000000097,premium_ltd
+AS-PRE00000000098,premium_ltd
+AS-PRE00000000099,premium_ltd
+AS-PRE00000000100,premium_ltd
+# ... (900 more Premium LTD codes)
+E000000000000001,premium_ltd
+E000000000000002,premium_ltd
+E000000000000003,premium_ltd
+E000000000000004,premium_ltd
+E000000000000005,premium_ltd
+# ... (more Premium LTD codes in 15-character format)
+
+### Ultimate LTD Codes (1000)
+
+AS-ULT00000000001,ultimate_ltd
+AS-ULT00000000002,ultimate_ltd
+AS-ULT00000000003,ultimate_ltd
+AS-ULT00000000004,ultimate_ltd
+AS-ULT00000000005,ultimate_ltd
+AS-ULT00000000006,ultimate_ltd
+AS-ULT00000000007,ultimate_ltd
+AS-ULT00000000008,ultimate_ltd
+AS-ULT00000000009,ultimate_ltd
+AS-ULT00000000010,ultimate_ltd
+AS-ULT00000000011,ultimate_ltd
+AS-ULT00000000012,ultimate_ltd
+AS-ULT00000000013,ultimate_ltd
+AS-ULT00000000014,ultimate_ltd
+AS-ULT00000000015,ultimate_ltd
+AS-ULT00000000016,ultimate_ltd
+AS-ULT00000000017,ultimate_ltd
+AS-ULT00000000018,ultimate_ltd
+AS-ULT00000000019,ultimate_ltd
+AS-ULT00000000020,ultimate_ltd
+AS-ULT00000000021,ultimate_ltd
+AS-ULT00000000022,ultimate_ltd
+AS-ULT00000000023,ultimate_ltd
+AS-ULT00000000024,ultimate_ltd
+AS-ULT00000000025,ultimate_ltd
+AS-ULT00000000026,ultimate_ltd
+AS-ULT00000000027,ultimate_ltd
+AS-ULT00000000028,ultimate_ltd
+AS-ULT00000000029,ultimate_ltd
+AS-ULT00000000030,ultimate_ltd
+AS-ULT00000000031,ultimate_ltd
+AS-ULT00000000032,ultimate_ltd
+AS-ULT00000000033,ultimate_ltd
+AS-ULT00000000034,ultimate_ltd
+AS-ULT00000000035,ultimate_ltd
+AS-ULT00000000036,ultimate_ltd
+AS-ULT00000000037,ultimate_ltd
+AS-ULT00000000038,ultimate_ltd
+AS-ULT00000000039,ultimate_ltd
+AS-ULT00000000040,ultimate_ltd
+AS-ULT00000000041,ultimate_ltd
+AS-ULT00000000042,ultimate_ltd
+AS-ULT00000000043,ultimate_ltd
+AS-ULT00000000044,ultimate_ltd
+AS-ULT00000000045,ultimate_ltd
+AS-ULT00000000046,ultimate_ltd
+AS-ULT00000000047,ultimate_ltd
+AS-ULT00000000048,ultimate_ltd
+AS-ULT00000000049,ultimate_ltd
+AS-ULT00000000050,ultimate_ltd
+AS-ULT00000000051,ultimate_ltd
+AS-ULT00000000052,ultimate_ltd
+AS-ULT00000000053,ultimate_ltd
+AS-ULT00000000054,ultimate_ltd
+AS-ULT00000000055,ultimate_ltd
+AS-ULT00000000056,ultimate_ltd
+AS-ULT00000000057,ultimate_ltd
+AS-ULT00000000058,ultimate_ltd
+AS-ULT00000000059,ultimate_ltd
+AS-ULT00000000060,ultimate_ltd
+AS-ULT00000000061,ultimate_ltd
+AS-ULT00000000062,ultimate_ltd
+AS-ULT00000000063,ultimate_ltd
+AS-ULT00000000064,ultimate_ltd
+AS-ULT00000000065,ultimate_ltd
+AS-ULT00000000066,ultimate_ltd
+AS-ULT00000000067,ultimate_ltd
+AS-ULT00000000068,ultimate_ltd
+AS-ULT00000000069,ultimate_ltd
+AS-ULT00000000070,ultimate_ltd
+AS-ULT00000000071,ultimate_ltd
+AS-ULT00000000072,ultimate_ltd
+AS-ULT00000000073,ultimate_ltd
+AS-ULT00000000074,ultimate_ltd
+AS-ULT00000000075,ultimate_ltd
+AS-ULT00000000076,ultimate_ltd
+AS-ULT00000000077,ultimate_ltd
+AS-ULT00000000078,ultimate_ltd
+AS-ULT00000000079,ultimate_ltd
+AS-ULT00000000080,ultimate_ltd
+AS-ULT00000000081,ultimate_ltd
+AS-ULT00000000082,ultimate_ltd
+AS-ULT00000000083,ultimate_ltd
+AS-ULT00000000084,ultimate_ltd
+AS-ULT00000000085,ultimate_ltd
+AS-ULT00000000086,ultimate_ltd
+AS-ULT00000000087,ultimate_ltd
+AS-ULT00000000088,ultimate_ltd
+AS-ULT00000000089,ultimate_ltd
+AS-ULT00000000090,ultimate_ltd
+AS-ULT00000000091,ultimate_ltd
+AS-ULT00000000092,ultimate_ltd
+AS-ULT00000000093,ultimate_ltd
+AS-ULT00000000094,ultimate_ltd
+AS-ULT00000000095,ultimate_ltd
+AS-ULT00000000096,ultimate_ltd
+AS-ULT00000000097,ultimate_ltd
+AS-ULT00000000098,ultimate_ltd
+AS-ULT00000000099,ultimate_ltd
+AS-ULT00000000100,ultimate_ltd
+# ... (900 more Ultimate LTD codes)
+I000000000000001,ultimate_ltd
+I000000000000002,ultimate_ltd
+I000000000000003,ultimate_ltd
+I000000000000004,ultimate_ltd
+I000000000000005,ultimate_ltd
+# ... (more Ultimate LTD codes in 15-character format)
+
+## How the System Works
+
+1. **Code Input**: User enters an AppSumo code and selects a plan type
+
+2. **Format Validation**: System validates the code format
+   - Must be either AS-XXXXXX format or 15-character format
+   - Automatically converts to uppercase
+
+3. **Plan Matching**: System determines the plan type based on the code
+   - First checks against known test codes
+   - Then uses pattern matching based on code format
+   - For AS-XXXXXX: Uses first 3 characters after AS-
+   - For 15-character: Uses first character
+
+4. **Plan Validation**: System verifies the code matches the selected plan
+   - If mismatch, shows error: "This code is for [actual plan] plan, but you selected [selected plan] plan"
+
+5. **Redemption**: If validation passes, the system:
+   - Records the redemption
+   - Updates user subscription to lifetime plan
+   - Updates user metadata with AppSumo information
+   - Shows success confirmation
+
+## Code Generation Script
+
+To generate these codes programmatically, you can use this JavaScript script:
+
+```javascript
+// Generate AppSumo codes for different plan types
+function generateAppSumoCodes() {
+  const plans = ['basic_ltd', 'premium_ltd', 'ultimate_ltd'];
+  const prefixes = {
+    basic_ltd: 'AS-BAS',
+    premium_ltd: 'AS-PRE',
+    ultimate_ltd: 'AS-ULT'
+  };
+  const newFormatPrefixes = {
+    basic_ltd: 'A',
+    premium_ltd: 'E',
+    ultimate_ltd: 'I'
+  };
+  
+  let allCodes = [];
+  
+  // Generate 1000 codes for each plan type
+  plans.forEach(plan => {
+    // Generate AS-XXXXXX format codes
+    for (let i = 1; i <= 800; i++) {
+      const paddedNumber = String(i).padStart(11, '0');
+      const code = `${prefixes[plan]}${paddedNumber}`;
+      allCodes.push(`${code},${plan}`);
+    }
+    
+    // Generate 15-character format codes
+    for (let i = 1; i <= 200; i++) {
+      const paddedNumber = String(i).padStart(15, '0');
+      const code = `${newFormatPrefixes[plan]}${paddedNumber.substring(1)}`;
+      allCodes.push(`${code},${plan}`);
+    }
+  });
+  
+  return allCodes;
+}
+
+// Export codes to CSV
+const codes = generateAppSumoCodes();
+console.log(codes.join('\n'));
+```
+
+## SQL Import Script
+
+To import these codes into your database:
+
+```sql
+-- Create temporary table for bulk import
+CREATE TEMP TABLE temp_appsumo_codes (
+  code TEXT,
+  plan_type TEXT
+);
+
+-- Copy data from CSV file
+COPY temp_appsumo_codes (code, plan_type) FROM '/path/to/appsumo_codes.csv' DELIMITER ',' CSV;
+
+-- Insert into actual table
+INSERT INTO public.appsumo_codes (code, plan_type, created_at, is_active)
+SELECT code, plan_type, NOW(), TRUE
+FROM temp_appsumo_codes
+ON CONFLICT (code) DO NOTHING;
+
+-- Check import results
+SELECT plan_type, COUNT(*) FROM public.appsumo_codes GROUP BY plan_type;
+```

@@ -28,10 +28,10 @@ export const authService = {
    * @returns The registered user data and session
    */
   async registerUser({ email, password, fullName, isAppSumoUser = false, appsumoCode }: RegisterUserParams) {
-    // Create user metadata with AppSumo flag
+    // Create user metadata - don't set AppSumo flag until code is redeemed
     const metadata: Record<string, any> = {
       full_name: fullName,
-      is_appsumo_user: isAppSumoUser,
+      is_appsumo_user: false, // Always false until code is redeemed
     };
     
     // Add AppSumo code to metadata if provided

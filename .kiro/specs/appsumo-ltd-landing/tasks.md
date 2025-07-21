@@ -158,7 +158,7 @@
     - Implement email, password, and name input fields
     - Add form validation with error messages
     - Create submission handling logic
-    - _Requirements: 3.1, 3.2, 3.5, 8.5_
+    - _Requirements: 3.1, 3.2, 3.5, 9.5_
   
   - [x] 5.2 Implement registration API integration
 
@@ -167,7 +167,8 @@
     - Create service for user registration
     - Add AppSumo user type flag to registration
     - Implement error handling for API responses
-    - _Requirements: 3.3, 3.5_
+    - Update registration flow to redirect to plan selection
+    - _Requirements: 3.3, 3.4, 3.5_
   
   - [x] 5.3 Add authentication state management
 
@@ -176,59 +177,146 @@
     - Implement login functionality for existing users
     - Create auth context integration
     - Add session persistence
-    - _Requirements: 6.1, 6.2_
+    - Update login flow to redirect to plan selection
+    - _Requirements: 7.1, 7.2_
 
-- [x] 6. Develop code redemption system
-
-
-
-
-  - [x] 6.1 Create code redemption form component
+- [x] 5.4 Create LTD plan selection page
 
 
-    - create 3000 code for the code to be used in the redemption
-    - the code should contain a 15 character word
-    - save the 3000 generated code in a code.txt file
-    - Implement code input field with validation
-    - Add submission button and loading states
-    - Create success and error message displays
-    - _Requirements: 4.1, 4.5, 4.6, 8.5_
+
+  - [x] 5.4.1 Implement plan selection component structure
+
+
+    - Create LTDPlanSelection component with state management
+    - Add plan data structure with Basic, Premium, and Ultimate LTD plans
+    - Implement plan selection state and validation
+    - _Requirements: 4.1, 4.2_
   
+  - [x] 5.4.2 Build interactive plan cards
 
-
-
-
-  - [x] 6.2 Implement code validation service
-
-    - Create API service for code validation
-
-
-    - Add format and authenticity checking
-    - Implement duplicate redemption prevention
-    - _Requirements: 4.2, 4.6, 7.2_
+    - Create PlanCard component with features list and limits
+    - Add selection indicators and hover states
+    - Implement click-to-select functionality
+    - Style cards with responsive design
+    - _Requirements: 4.2, 6.1_
   
+  - [x] 5.4.3 Add navigation and validation
 
-  - [x] 6.3 Build plan activation functionality
+    - Implement continue button with plan selection validation
+    - Add navigation to code redemption with selected plan context
+    - Create plan selection persistence in session/state
+    - _Requirements: 4.3, 4.4, 4.5_
 
-    - Implement user plan update on successful redemption
-    - Create confirmation display with plan details
-    - Add redirect to dashboard after successful activation
-    - _Requirements: 4.3, 4.4, 5.4_
+- [x] 6. Develop enhanced code redemption system
+
+
+  - [x] 6.1 Update code redemption form component
+
+
+
+    - [x] 6.1.1 Modify code input interface
+
+      - Update CodeRedemption component to accept selectedPlan prop
+      - Add plan context display showing selected plan name
+      - Implement plan-specific instructions and help text
+      - _Requirements: 5.1, 5.4_
+    
+    - [x] 6.1.2 Enhance form validation and submission
+
+      - Update form validation to include plan context
+      - Modify submission handler to pass plan type to API
+      - Add loading states specific to plan-aware redemption
+      - _Requirements: 5.1, 5.5_
+    
+    - [x] 6.1.3 Improve success and error messaging
+
+      - Update success message to show activated plan details
+      - Add plan-specific error messages for mismatches
+      - Implement retry functionality with plan context preserved
+      - _Requirements: 5.4, 5.5, 5.6, 5.7_
   
-  - [x] 6.4 Implement existing user upgrade flow
+  - [x] 6.2 Enhance code validation service
 
 
-    - Create logic to apply code to existing account
-    - Add data preservation during upgrade
-    - Implement conflict resolution for subscription changes
-    - _Requirements: 6.2, 6.3, 6.4, 6.5_
+    - [x] 6.2.1 Update AppSumo service interface
+
+      - Modify redeemCode method to accept planType parameter
+      - Add validateCode method with plan compatibility checking
+      - Update error types to include PLAN_MISMATCH
+      - _Requirements: 5.2, 5.7_
+    
+    - [x] 6.2.2 Implement plan compatibility validation
+
+
+      - Add database queries to check code-plan compatibility
+      - Implement logic to validate code format and plan matching
+      - Add comprehensive error handling for all validation scenarios
+      - _Requirements: 5.2, 5.6, 5.7_
+    
+    - [x] 6.2.3 Update duplicate prevention logic
+
+      - Modify redemption tracking to include plan information
+      - Ensure codes can't be redeemed multiple times
+      - Add logging for redemption attempts with plan context
+      - _Requirements: 5.6, 8.2_
+  
+  - [x] 6.3 Update plan activation functionality
+
+
+    - [x] 6.3.1 Modify user plan update logic
+
+      - Update user profile with selected LTD plan type
+      - Ensure plan activation uses selected plan from plan selection
+      - Add plan activation timestamp and tracking
+      - _Requirements: 5.3, 6.4_
+    
+    - [x] 6.3.2 Update confirmation and redirect flow
+
+      - Modify success confirmation to show specific activated plan
+      - Maintain dashboard redirect after successful activation
+      - Add plan benefits summary in confirmation
+      - _Requirements: 5.4, 6.4_
+  
+  - [x] 6.4 Update existing user upgrade flow
+
+
+    - [x] 6.4.1 Integrate plan selection for existing users
+
+      - Modify existing user login flow to include plan selection
+      - Ensure existing user data preservation during upgrade
+      - Add conflict resolution for current subscription vs LTD plan
+      - _Requirements: 7.2, 7.3, 7.4_
+    
+    - [x] 6.4.2 Handle subscription transition
+
+      - Implement logic to handle existing subscription cancellation
+      - Add LTD plan activation for existing users
+      - Ensure data continuity during plan transition
+      - _Requirements: 7.4, 7.5_
 
 - [ ] 7. Create admin tracking and management features
-  - [ ] 7.1 Implement code generation and storage system
-    - Create database schema for AppSumo codes
-    - Add API endpoints for code management
-    - Implement secure code storage
-    - _Requirements: 7.1_
+  - [ ] 7.1 Implement enhanced code generation and storage system
+
+
+
+
+    - [ ] 7.1.1 Update database schema for plan-aware codes
+      - Modify AppSumo codes table to include plan_type field
+      - Add plan compatibility constraints and indexes
+      - Update existing codes with plan type assignments
+      - _Requirements: 8.1_
+    
+    - [ ] 7.1.2 Create plan-aware code generation
+      - Update code generation script to assign plan types
+      - Ensure equal distribution across Basic, Premium, Ultimate LTD plans
+      - Add plan type validation in code creation API
+      - _Requirements: 8.1_
+    
+    - [ ] 7.1.3 Implement secure code storage with plan context
+      - Add plan-specific code storage and retrieval
+      - Implement secure code validation with plan checking
+      - Add code expiration handling per plan type
+      - _Requirements: 8.1_
   
   - [ ] 7.2 Build redemption logging system
     - Create redemption record storage
@@ -274,20 +362,47 @@
     - Ensure form usability on small screens
     - _Requirements: 8.1, 8.2, 8.4, 8.5_
 
-- [ ] 9. Implement comprehensive testing
-  - [ ] 9.1 Write unit tests for components
+- [ ] 9. Fix temporary bypasses with proper database integration
+  - [ ] 9.1 Ensure database tables are properly created
+    - Verify AppSumo codes and redemptions tables exist
+    - Run database migration scripts if needed
+    - Confirm table structure matches schema requirements
+    - _Requirements: 8.1, 8.2_
+  
+  - [ ] 9.2 Replace temporary code validation with database queries
+
+
+    - Remove hardcoded test codes from service
+    - Implement proper database lookup for code validation
+    - Add plan compatibility checking against database
+    - _Requirements: 5.2, 5.6, 5.7_
+  
+  - [ ] 9.3 Implement proper user metadata updates
+    - Replace bypassed auth.updateUser calls with working implementation
+    - Add proper error handling for user updates
+    - Ensure user subscription data is properly stored
+    - _Requirements: 5.3, 6.4_
+  
+  - [ ] 9.4 Add redemption tracking to database
+    - Implement proper redemption record creation
+    - Add duplicate redemption prevention
+    - Store redemption history with timestamps
+    - _Requirements: 5.6, 8.2_
+
+- [ ] 10. Implement comprehensive testing
+  - [ ] 10.1 Write unit tests for components
     - Test registration and redemption forms
     - Test interactive visualizations
     - Test authentication flows
     - _Requirements: All_
   
-  - [ ] 9.2 Create integration tests
+  - [ ] 10.2 Create integration tests
     - Test end-to-end registration flow
     - Test redemption process with various scenarios
     - Test existing user upgrade path
     - _Requirements: All_
   
-  - [ ] 9.3 Perform accessibility testing
+  - [ ] 10.3 Perform accessibility testing
     - Test keyboard navigation
     - Verify screen reader compatibility
     - Ensure color contrast compliance

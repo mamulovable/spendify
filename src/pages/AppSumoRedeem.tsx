@@ -11,7 +11,8 @@ import DocumentProcessingDemo from '@/components/features/DocumentProcessingDemo
 import PlanComparisonTable from '@/components/features/PlanComparisonTable';
 import { RegistrationForm } from '@/components/auth/RegistrationForm';
 import { SignInForm } from '@/components/auth/SignInForm';
-import { CodeRedemptionForm } from '@/components/auth/CodeRedemptionForm';
+import { LTDPlanSelection, LTDPlanType } from '@/components/auth/LTDPlanSelection';
+import { EnhancedCodeRedemptionForm } from '@/components/auth/EnhancedCodeRedemptionForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
@@ -36,6 +37,10 @@ const AppSumoRedeem = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeButton, setActiveButton] = useState<'register' | 'signin' | null>(null);
   
+  // Enhanced authentication flow state
+  const [currentStep, setCurrentStep] = useState<'auth' | 'plan-selection' | 'code-redemption'>('auth');
+  const [selectedPlan, setSelectedPlan] = useState<LTDPlanType | null>(null);
+  
   // Smooth scroll to section function
   const scrollToSection = useCallback((sectionId: string) => {
     const element = document.querySelector(sectionId);
@@ -46,6 +51,31 @@ const AppSumoRedeem = () => {
       }, 100);
     }
   }, []);
+  
+  // Handle successful authentication (registration or sign-in)
+  const handleAuthSuccess = useCallback(() => {
+    setCurrentStep('plan-selection');
+    scrollToSection('#redeem');
+  }, [scrollToSection]);
+  
+  // Handle plan selection
+  const handlePlanSelect = useCallback((planId: LTDPlanType) => {
+    setSelectedPlan(planId);
+    setCurrentStep('code-redemption');
+  }, []);
+  
+  // Handle going back to plan selection
+  const handleBackToPlanSelection = useCallback(() => {
+    setCurrentStep('plan-selection');
+    setSelectedPlan(null);
+  }, []);
+  
+  // Handle successful code redemption
+  const handleRedemptionSuccess = useCallback(() => {
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 2000);
+  }, [navigate]);
   
   // Scroll to section on hash change or initial load
   useEffect(() => {
@@ -413,7 +443,7 @@ const AppSumoRedeem = () => {
               Create your SpendlyAI account to redeem your AppSumo code.
             </p>
             <RegistrationForm 
-              onSuccess={() => scrollToSection('#redeem')}
+              onSuccess={handleAuthSuccess}
               onSignInClick={() => handleButtonClick('signin', '#signin')}
             />
           </div>
@@ -429,22 +459,21 @@ const AppSumoRedeem = () => {
               Sign in to your existing account to redeem your AppSumo code.
             </p>
             <SignInForm 
-              onSuccess={() => scrollToSection('#redeem')}
+              onSuccess={handleAuthSuccess}
               onRegisterClick={() => handleButtonClick('register', '#register')}
             />
           </div>
         </Container>
       </section>
 
-      {/* Code Redemption Section */}
+      {/* Code Redemption Section - Enhanced Flow */}
       <section id="redeem" className="py-16">
         <Container>
-          <div className="max-w-md mx-auto bg-background rounded-lg p-8 shadow-sm border border-border/50">
-            <h2 className="text-2xl font-bold mb-6 text-center">Redeem Your AppSumo Code</h2>
-            
+          <div className="max-w-2xl mx-auto bg-background rounded-lg p-8 shadow-sm border border-border/50">
             {!user && (
-              <div className="text-center mb-6">
-                <p className="text-muted-foreground mb-4">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold mb-6">Get Started with Your AppSumo Deal</h2>
+                <p className="text-muted-foreground mb-6">
                   You need to be signed in to redeem your AppSumo code.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -485,17 +514,38 @@ const AppSumoRedeem = () => {
             
             {user && !isAppSumoUser && (
               <>
-                <p className="text-center text-muted-foreground mb-6">
-                  Enter your AppSumo code below to activate your lifetime plan.
-                </p>
-                <CodeRedemptionForm 
-                  onSuccess={(response) => {
-                    // Redirect to dashboard after successful redemption
-                    setTimeout(() => {
-                      navigate('/dashboard');
-                    }, 2000);
-                  }}
-                />
+                {/* Plan Selection Step */}
+                {currentStep === 'plan-selection' && (
+                  <LTDPlanSelection
+                    onPlanSelect={handlePlanSelect}
+                    isLoading={false}
+                  />
+                )}
+                
+                {/* Enhanced Code Redemption Step */}
+                {currentStep === 'code-redemption' && selectedPlan && (
+                  <EnhancedCodeRedemptionForm
+                    selectedPlan={selectedPlan}
+                    onSuccess={handleRedemptionSuccess}
+                    onBack={handleBackToPlanSelection}
+                  />
+                )}
+                
+                {/* Fallback to old flow if user is authenticated but currentStep is 'auth' */}
+                {currentStep === 'auth' && (
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-6">Choose Your Plan</h2>
+                    <p className="text-muted-foreground mb-6">
+                      Select your AppSumo LTD plan to get started.
+                    </p>
+                    <Button 
+                      onClick={() => setCurrentStep('plan-selection')}
+                      className="bg-primary text-primary-foreground"
+                    >
+                      Choose Your Plan
+                    </Button>
+                  </div>
+                )}
               </>
             )}
           </div>

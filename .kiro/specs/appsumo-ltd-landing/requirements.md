@@ -39,23 +39,36 @@ This feature creates a dedicated landing page and redemption system for AppSumo 
 1. WHEN a user clicks the registration option THEN the system SHALL display a simplified registration form for AppSumo users
 2. WHEN a user registers THEN the system SHALL collect email, password, and full name
 3. WHEN registration is submitted THEN the system SHALL create an account with AppSumo LTD user type
-4. WHEN registration is successful THEN the system SHALL redirect to the code redemption flow
+4. WHEN registration is successful THEN the system SHALL redirect to the LTD plan selection page
 5. WHEN registration fails THEN the system SHALL display clear error messages
 
 ### Requirement 4
 
-**User Story:** As an AppSumo customer, I want to redeem my AppSumo code during or after registration, so that I can activate my lifetime deal benefits.
+**User Story:** As an AppSumo customer, I want to select an LTD plan after successful registration, so that I can choose the plan that matches my AppSumo purchase.
 
 #### Acceptance Criteria
 
-1. WHEN a user accesses the redemption flow THEN the system SHALL display a code input field
-2. WHEN a user enters an AppSumo code THEN the system SHALL validate the code format and authenticity
-3. WHEN a valid code is submitted THEN the system SHALL activate the appropriate LTD plan for the user
-4. WHEN code redemption is successful THEN the system SHALL redirect the user to the main application dashboard
-5. WHEN an invalid code is entered THEN the system SHALL display appropriate error messages
-6. WHEN a code has already been redeemed THEN the system SHALL prevent duplicate redemption
+1. WHEN a user completes registration successfully THEN the system SHALL redirect to an LTD plan selection page
+2. WHEN the plan selection page loads THEN the system SHALL display available LTD plans with their features and benefits
+3. WHEN a user selects a plan THEN the system SHALL proceed to the code redemption step for that specific plan
+4. WHEN no plan is selected THEN the system SHALL not allow proceeding to code redemption
+5. WHEN a user navigates back THEN the system SHALL preserve their registration and allow plan reselection
 
 ### Requirement 5
+
+**User Story:** As an AppSumo customer, I want to redeem my AppSumo code after selecting my plan, so that I can activate my chosen LTD benefits with proper validation.
+
+#### Acceptance Criteria
+
+1. WHEN a user selects a plan THEN the system SHALL display a code input field specific to that plan type
+2. WHEN a user enters an AppSumo code THEN the system SHALL validate the code format, authenticity, and plan compatibility
+3. WHEN a valid code is submitted THEN the system SHALL activate the selected LTD plan for the user
+4. WHEN code redemption is successful THEN the system SHALL display confirmation and redirect to the main application dashboard
+5. WHEN an invalid code is entered THEN the system SHALL display appropriate error messages and allow retry
+6. WHEN a code has already been redeemed THEN the system SHALL prevent duplicate redemption
+7. WHEN a code doesn't match the selected plan THEN the system SHALL display plan mismatch error
+
+### Requirement 6
 
 **User Story:** As an AppSumo customer, I want to understand the specific benefits and limitations of my LTD plan, so that I know what features I have access to.
 
@@ -67,7 +80,7 @@ This feature creates a dedicated landing page and redemption system for AppSumo 
 4. WHEN a user redeems a code THEN the system SHALL display a confirmation of their specific plan benefits
 5. WHEN users access the app THEN the system SHALL apply appropriate feature gates based on their LTD plan
 
-### Requirement 6
+### Requirement 7
 
 **User Story:** As an existing user, I want the option to upgrade my current account with an AppSumo code, so that I can apply my LTD benefits to my existing account.
 
@@ -79,7 +92,7 @@ This feature creates a dedicated landing page and redemption system for AppSumo 
 4. WHEN account upgrade is successful THEN the system SHALL preserve existing user data and settings
 5. WHEN upgrade conflicts exist THEN the system SHALL handle the transition gracefully with user confirmation
 
-### Requirement 7
+### Requirement 8
 
 **User Story:** As a system administrator, I want to track and manage AppSumo code redemptions, so that I can monitor the LTD program and prevent abuse.
 
@@ -91,7 +104,7 @@ This feature creates a dedicated landing page and redemption system for AppSumo 
 4. WHEN suspicious redemption patterns are detected THEN the system SHALL flag them for review
 5. WHEN codes need to be deactivated THEN the system SHALL provide administrative controls
 
-### Requirement 8
+### Requirement 9
 
 **User Story:** As an AppSumo customer, I want the landing page to be mobile-responsive and fast-loading, so that I can access it from any device.
 

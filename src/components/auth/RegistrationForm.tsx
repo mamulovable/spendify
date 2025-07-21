@@ -22,11 +22,7 @@ const formSchema = z.object({
     .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
     .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
     .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-  appsumoCode: z.string()
-    .optional()
-    .refine(val => !val || /^AS-[A-Z0-9]{6,}$/i.test(val), {
-      message: 'Invalid AppSumo code format. Should be like: AS-XXXXXX',
-    }),
+
 });
 
 // Define the form values type from the schema
@@ -49,7 +45,6 @@ export function RegistrationForm({ onSuccess, onSignInClick }: RegistrationFormP
       fullName: '',
       email: '',
       password: '',
-      appsumoCode: '',
     },
   });
 
@@ -65,8 +60,7 @@ export function RegistrationForm({ onSuccess, onSignInClick }: RegistrationFormP
         email: data.email,
         password: data.password,
         fullName: data.fullName,
-        isAppSumoUser: true, // Flag this as an AppSumo user
-        appsumoCode: data.appsumoCode || undefined, // Only include if provided
+        // Don't set isAppSumoUser flag until code is redeemed
       });
 
       // Set success state
@@ -105,7 +99,7 @@ export function RegistrationForm({ onSuccess, onSignInClick }: RegistrationFormP
         <Alert className="bg-green-50 border-green-200">
           <AlertDescription className="text-green-800 flex items-center">
             <CheckCircle className="h-4 w-4 mr-2" />
-            Registration successful! Redirecting to code redemption...
+            Registration successful! Redirecting to plan selection...
           </AlertDescription>
         </Alert>
       )}
@@ -154,22 +148,7 @@ export function RegistrationForm({ onSuccess, onSignInClick }: RegistrationFormP
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="appsumoCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>AppSumo Code (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="AS-XXXXXX" {...field} />
-                </FormControl>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Enter your AppSumo code if you have one. You can also add it later.
-                </p>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
 
           <Button 
             type="submit" 
