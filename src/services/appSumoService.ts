@@ -14,6 +14,7 @@ export interface RedeemCodeWithPlanParams {
   code: string;
   planType: 'basic_ltd' | 'premium_ltd' | 'ultimate_ltd';
   userId: string;
+  source?: 'appsumo' | 'dealmirror';
 }
 
 export interface RedeemCodeWithPlanResponse {
@@ -359,23 +360,25 @@ export const appSumoService = {
   },
 
   /**
-   * Redeem an AppSumo code with plan validation
+   * Redeem an AppSumo/DealMirror code with plan validation
    * 
-   * @param params The code, plan type, and user ID for redemption
+   * @param params The code, plan type, user ID, and source platform for redemption
    * @returns The redemption response with plan validation
    */
-  async redeemCodeWithPlan({ code, planType, userId }: RedeemCodeWithPlanParams): Promise<RedeemCodeWithPlanResponse> {
+  async redeemCodeWithPlan({ code, planType, userId, source = 'appsumo' }: RedeemCodeWithPlanParams): Promise<RedeemCodeWithPlanResponse> {
     console.log('Starting code redemption:', { code: code.trim(), planType, userId });
     
     try {
       // Validate code format - support both old (AS-XXXXXX) and new (15-char) formats
+      const platformName = source === 'dealmirror' ? 'DealMirror' : 'AppSumo';
+      
       if (!code || code.trim().length < 8) {
         console.log('Code validation failed: too short');
         return {
           success: false,
           error: {
             type: 'INVALID_CODE',
-            message: 'AppSumo code is required.'
+            message: `${platformName} code is required.`
           }
         };
       }
@@ -390,7 +393,7 @@ export const appSumoService = {
           success: false,
           error: {
             type: 'INVALID_CODE',
-            message: 'Invalid AppSumo code format. Should be like AS-XXXXXX or 15-character code.'
+            message: `Invalid ${platformName} code format. Should be like AS-XXXXXX or 15-character code.`
           }
         };
       }
@@ -465,7 +468,7 @@ export const appSumoService = {
           success: false,
           error: {
             type: 'INVALID_CODE',
-            message: 'Invalid AppSumo code. Please check and try again.'
+            message: `Invalid ${platformName} code. Please check and try again.`
           }
         };
       }

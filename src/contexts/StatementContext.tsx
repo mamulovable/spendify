@@ -1,6 +1,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { BankTransaction, ProcessedStatement } from '../services/pdfService';
+import { mockStatementData } from '../mocks/mockStatementData';
 
 interface StatementContextType {
   statementData: ProcessedStatement | null;
@@ -17,7 +18,19 @@ interface StatementContextType {
 const StatementContext = createContext<StatementContextType | undefined>(undefined);
 
 export const StatementProvider = ({ children }: { children: ReactNode }) => {
-  const [statementData, setStatementData] = useState<ProcessedStatement | null>(null);
+  // Initialize with mock data for testing
+  const [statementData, setStatementData] = useState<ProcessedStatement | null>(() => {
+    // Ensure all transactions have a type field
+    const enhancedMockData = {
+      ...mockStatementData,
+      transactions: mockStatementData.transactions.map(transaction => ({
+        ...transaction,
+        // If type is not defined, infer it from amount
+        type: transaction.type || (transaction.amount >= 0 ? 'credit' : 'debit')
+      }))
+    };
+    return enhancedMockData;
+  });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +51,17 @@ export const StatementProvider = ({ children }: { children: ReactNode }) => {
 
   const clearData = () => {
     console.log("StatementContext - clearing all data");
-    setStatementData(null);
+    // For testing purposes, reset to mock data instead of null
+    // Ensure all transactions have a type field
+    const enhancedMockData = {
+      ...mockStatementData,
+      transactions: mockStatementData.transactions.map(transaction => ({
+        ...transaction,
+        // If type is not defined, infer it from amount
+        type: transaction.type || (transaction.amount >= 0 ? 'credit' : 'debit')
+      }))
+    };
+    setStatementData(enhancedMockData);
     setUploadedFile(null);
     setError(null);
   };

@@ -1,0 +1,291 @@
+SpendlyAI - Complete Feature Explanation
+
+This document provides a comprehensive overview of all features and functionality in the SpendlyAI web application, written in simple language for customer support and AI assistance.
+
+=== CORE APPLICATION OVERVIEW ===
+
+SpendlyAI is a comprehensive financial management and expense tracking application that uses AI to help users understand their spending patterns, manage budgets, and make better financial decisions. The app processes bank statements, receipts, and financial documents to provide intelligent insights and recommendations.
+
+=== MAIN FEATURES ===
+
+---
+**Feature Name:** Bank Statement Upload & Analysis
+**What It Does:** Users can upload PDF bank statements or images of statements to automatically extract and categorize transactions.
+**How It Works:** The system uses PDF.js to extract text from PDF files and Google Gemini AI with OCR (Optical Character Recognition) to process images. It identifies transactions, amounts, dates, and descriptions, then automatically categorizes them (like groceries, utilities, rent, etc.).
+**Files/Components Involved:** 
+- src/pages/Upload.tsx (upload interface)
+- src/services/pdfService.ts (PDF processing)
+- src/services/ocrService.ts (image processing)
+- src/services/bankStatementService.ts (transaction extraction)
+- src/components/UploadCard.tsx (upload UI)
+**How Users Interact With It:** Users drag and drop PDF files or select image files, the system processes them automatically, then displays extracted transactions in a table format for review.
+**AI/Automation Involved:** Google Gemini AI for text extraction from images, automatic transaction categorization, and intelligent parsing of bank statement formats.
+
+---
+**Feature Name:** Expense Analysis Dashboard
+**What It Does:** Provides visual analysis of spending patterns with charts, graphs, and categorized breakdowns of expenses.
+**How It Works:** Takes processed transaction data and creates interactive visualizations including pie charts for category breakdown, bar charts for spending trends, and summary cards showing totals.
+**Files/Components Involved:**
+- src/pages/Analyze.tsx (main analysis page)
+- src/components/StatCard.tsx (summary statistics)
+- src/components/CategoryBreakdownChart.tsx (pie charts)
+- src/components/SpendingTrendsChart.tsx (trend analysis)
+**How Users Interact With It:** Users view automatically generated charts and graphs, can filter by categories, time periods, and transaction types. They can save analyses for future reference.
+**AI/Automation Involved:** Automatic categorization of transactions, trend analysis, and generation of spending insights.
+
+---
+**Feature Name:** AI Financial Advisor Chat
+**What It Does:** Provides personalized financial advice through an AI-powered chat interface that can answer questions about spending, budgeting, and financial planning.
+**How It Works:** Uses Google Gemini AI to analyze user's financial data and provide contextual advice. The AI considers transaction history, spending patterns, and financial goals to give personalized recommendations.
+**Files/Components Involved:**
+- src/pages/AIFinancialAdvisor.tsx (chat interface)
+- src/services/aiFinancialAdvisorService.ts (AI logic)
+- src/services/geminiService.ts (AI API integration)
+- src/components/AiChat.tsx (chat component)
+**How Users Interact With It:** Users type questions in a chat interface and receive AI-generated responses. Quick question buttons are available for common queries like "How can I save more money?" or "What's my spending pattern?"
+**AI/Automation Involved:** Google Gemini AI analyzes user's financial data to provide personalized advice, spending recommendations, and budget suggestions.
+
+---
+**Feature Name:** Receipt Scanner
+**What It Does:** Allows users to take photos of receipts to automatically extract expense information and add to their expense tracking.
+**How It Works:** Uses OCR technology to read text from receipt images, extracts merchant name, amount, date, and suggests categories. The data is then added to the user's expense records.
+**Files/Components Involved:**
+- src/components/ImageUploader.tsx (receipt upload)
+- src/services/ocrService.ts (text extraction)
+- src/pages/ExpenseTracker.tsx (expense management)
+**How Users Interact With It:** Users take a photo of a receipt or upload an image, the system automatically extracts the information, and users can review and save the expense entry.
+**AI/Automation Involved:** OCR technology for text recognition, AI-powered categorization of expenses, and automatic data extraction from receipt formats.
+
+---
+**Feature Name:** Budget Management System
+**What It Does:** Helps users create, track, and manage budgets with real-time monitoring of spending against budget limits.
+**How It Works:** Users set budget amounts for different categories and time periods. The system tracks actual spending and shows progress bars, alerts for overspending, and budget vs. actual comparisons.
+**Files/Components Involved:**
+- src/pages/BudgetDashboard.tsx (budget overview)
+- src/pages/BudgetForm.tsx (budget creation)
+- src/services/budgetService.ts (budget logic)
+- src/components/BudgetAlerts.tsx (overspending alerts)
+**How Users Interact With It:** Users create budgets by setting amounts for categories, view progress through visual indicators, and receive alerts when approaching or exceeding limits.
+**AI/Automation Involved:** Automatic budget recommendations based on spending history, predictive alerts for potential overspending, and intelligent budget adjustments.
+
+---
+**Feature Name:** Financial Goals Tracking
+**What It Does:** Allows users to set and track progress toward financial goals like saving for vacation, emergency fund, or major purchases.
+**How It Works:** Users create goals with target amounts and deadlines. The system tracks progress, provides milestone updates, and offers suggestions for achieving goals faster.
+**Files/Components Involved:**
+- src/pages/FinancialGoals.tsx (goals management)
+- src/services/financialGoalsService.ts (goals logic)
+- src/hooks/useFinancialData.ts (data management)
+**How Users Interact With It:** Users set goals with target amounts and dates, update progress manually or automatically, and view visual progress indicators and milestone achievements.
+**AI/Automation Involved:** AI-powered goal suggestions based on spending patterns, automatic progress tracking, and personalized recommendations for achieving goals.
+
+---
+**Feature Name:** Advanced Analytics Suite
+**What It Does:** Provides deep financial insights including cash flow analysis, merchant intelligence, financial health scoring, and tax categorization.
+**How It Works:** Analyzes transaction data to identify patterns, recurring expenses, suspicious activities, and provides comprehensive financial health assessments.
+**Files/Components Involved:**
+- src/pages/MoreAnalyticsPage.tsx (advanced analytics hub)
+- src/components/analytics/ (various analysis components)
+- src/services/cashFlowService.ts (cash flow analysis)
+- src/services/financialHealthService.ts (health scoring)
+**How Users Interact With It:** Users access different analytics tabs to view cash flow predictions, merchant spending patterns, financial health scores, and tax-ready expense categorization.
+**AI/Automation Involved:** Machine learning for pattern recognition, predictive cash flow modeling, automated financial health scoring, and intelligent tax categorization.
+
+---
+**Feature Name:** Expense Tracker
+**What It Does:** Manual expense entry system for users to add, edit, and categorize individual expenses with receipt attachments.
+**How It Works:** Provides forms for entering expense details, category management, and expense history with search and filtering capabilities.
+**Files/Components Involved:**
+- src/pages/ExpenseTracker.tsx (main tracker)
+- src/components/AddExpenseModal.tsx (expense entry)
+- src/components/ExpenseList.tsx (expense display)
+- src/components/CategoryManager.tsx (category management)
+**How Users Interact With It:** Users manually enter expenses through forms, attach receipts, categorize expenses, and view/edit their expense history.
+**AI/Automation Involved:** Automatic category suggestions based on expense descriptions, duplicate detection, and spending pattern analysis.
+
+---
+**Feature Name:** Document Processing Queue
+**What It Does:** Manages the processing of uploaded financial documents with status tracking and batch processing capabilities.
+**How It Works:** Queues uploaded documents for processing, tracks status (pending, processing, completed, failed), and provides batch operations for multiple documents.
+**Files/Components Involved:**
+- src/pages/admin/DocumentQueue.tsx (admin interface)
+- src/services/documentProcessingService.ts (processing logic)
+- src/components/admin/DocumentQueueTable.tsx (queue display)
+**How Users Interact With It:** Admin users monitor document processing status, retry failed documents, and manage processing queues. Regular users see processing status for their uploads.
+**AI/Automation Involved:** Automated document processing pipeline, intelligent error handling, and batch processing optimization.
+
+---
+**Feature Name:** Saved Analyses
+**What It Does:** Allows users to save and revisit previous financial analyses for comparison and historical tracking.
+**How It Works:** Stores analysis results with timestamps, allows naming and organizing saved analyses, and provides comparison tools between different time periods.
+**Files/Components Involved:**
+- src/pages/SavedAnalyses.tsx (saved analyses view)
+- src/services/storageService.ts (data persistence)
+- src/components/SaveAnalysisDialog.tsx (save interface)
+**How Users Interact With It:** Users save current analyses with custom names, browse previously saved analyses, and compare different time periods or analysis results.
+**AI/Automation Involved:** Automatic analysis summarization, trend detection between saved analyses, and intelligent naming suggestions.
+
+---
+**Feature Name:** User Authentication & Onboarding
+**What It Does:** Handles user registration, login, and guided onboarding process to personalize the experience.
+**How It Works:** Secure authentication through Supabase, multi-step onboarding to understand user needs, and personalized setup based on user preferences.
+**Files/Components Involved:**
+- src/pages/Auth.tsx (login/register)
+- src/contexts/AuthContext.tsx (auth management)
+- src/components/onboarding/ (onboarding steps)
+- src/services/authService.ts (auth logic)
+**How Users Interact With It:** Users create accounts, go through guided setup questions about their financial goals and preferences, and receive personalized app configuration.
+**AI/Automation Involved:** Personalized onboarding recommendations, automatic feature suggestions based on user profile, and intelligent app configuration.
+
+---
+**Feature Name:** Subscription Management
+**What It Does:** Manages user subscription tiers, feature access, usage limits, and billing.
+**How It Works:** Tracks subscription status, enforces feature gates based on plan level, manages trial periods, and handles plan upgrades/downgrades.
+**Files/Components Involved:**
+- src/contexts/SubscriptionContext.tsx (subscription state)
+- src/pages/BillingPage.tsx (billing interface)
+- src/components/FeatureGate.tsx (access control)
+- src/services/paystackService.ts (payment processing)
+**How Users Interact With It:** Users view their current plan, upgrade/downgrade subscriptions, manage billing information, and see feature availability based on their plan.
+**AI/Automation Involved:** Usage pattern analysis for plan recommendations, automatic billing notifications, and intelligent upgrade suggestions.
+
+---
+**Feature Name:** AppSumo Lifetime Deal Integration
+**What It Does:** Special integration for AppSumo customers to redeem lifetime access codes and activate premium features.
+**How It Works:** Validates AppSumo codes, activates lifetime subscriptions, and provides special onboarding for lifetime deal customers.
+**Files/Components Involved:**
+- src/pages/AppSumoRedeem.tsx (redemption page)
+- src/services/appSumoService.ts (code validation)
+- src/components/auth/EnhancedCodeRedemptionForm.tsx (redemption form)
+**How Users Interact With It:** AppSumo customers enter their redemption codes, select their plan tier, and activate lifetime access to premium features.
+**AI/Automation Involved:** Automatic code validation, plan feature activation, and personalized setup for lifetime users.
+
+---
+**Feature Name:** Admin Dashboard
+**What It Does:** Comprehensive administrative interface for managing users, subscriptions, analytics, and system settings.
+**How It Works:** Provides admin users with tools to monitor user activity, manage subscriptions, view system analytics, handle support tickets, and configure application settings.
+**Files/Components Involved:**
+- src/pages/admin/ (admin pages)
+- src/components/admin/ (admin components)
+- src/services/adminUserService.ts (user management)
+- src/contexts/AdminContext.tsx (admin state)
+**How Users Interact With It:** Admin users access a separate dashboard to manage users, view analytics, handle support requests, and configure system settings.
+**AI/Automation Involved:** Automated user behavior analysis, intelligent fraud detection, and predictive analytics for business insights.
+
+---
+**Feature Name:** Security & Fraud Detection
+**What It Does:** Monitors transactions for suspicious activity, potential scams, and unusual spending patterns.
+**How It Works:** Analyzes transaction patterns to identify potentially fraudulent activities, unusual spending spikes, and suspicious merchant activities.
+**Files/Components Involved:**
+- src/components/analytics/ScamAlertsTab.tsx (security alerts)
+- src/services/securityService.ts (security logic)
+- src/types/securityAlert.ts (security data types)
+**How Users Interact With It:** Users receive alerts about suspicious transactions, can review flagged activities, and get recommendations for securing their finances.
+**AI/Automation Involved:** Machine learning algorithms for fraud detection, pattern recognition for unusual activities, and automated security alerts.
+
+---
+**Feature Name:** Recurring Expense Analysis
+**What It Does:** Identifies and analyzes recurring payments like subscriptions, utilities, and regular services.
+**How It Works:** Scans transaction history to identify recurring patterns, tracks subscription costs, and suggests optimization opportunities.
+**Files/Components Involved:**
+- src/components/analytics/RecurringExpensesTab.tsx (recurring analysis)
+- src/services/recurringExpenseService.ts (recurring logic)
+- src/hooks/useRecurringExpenses.ts (data management)
+**How Users Interact With It:** Users view identified recurring expenses, track subscription costs, and receive suggestions for reducing recurring payments.
+**AI/Automation Involved:** Pattern recognition for identifying recurring transactions, cost optimization suggestions, and subscription management recommendations.
+
+---
+**Feature Name:** Cash Flow Prediction
+**What It Does:** Predicts future cash flow based on historical spending patterns and upcoming expenses.
+**How It Works:** Analyzes spending trends, identifies seasonal patterns, and projects future cash flow to help with financial planning.
+**Files/Components Involved:**
+- src/components/analytics/CashFlowTab.tsx (cash flow interface)
+- src/services/cashFlowService.ts (prediction logic)
+- src/types/cashFlow.ts (cash flow data types)
+**How Users Interact With It:** Users view cash flow predictions, see projected balances, and receive alerts about potential cash flow issues.
+**AI/Automation Involved:** Predictive modeling for cash flow forecasting, seasonal pattern recognition, and intelligent financial planning suggestions.
+
+---
+**Feature Name:** Merchant Intelligence
+**What It Does:** Analyzes spending patterns by merchant to provide insights about where money is being spent most frequently.
+**How It Works:** Groups transactions by merchant, analyzes spending frequency and amounts, and provides insights about merchant relationships.
+**Files/Components Involved:**
+- src/components/analytics/MerchantIntelligenceTab.tsx (merchant analysis)
+- src/services/merchantIntelligenceService.ts (merchant logic)
+- src/components/MerchantAnalytics.tsx (merchant display)
+**How Users Interact With It:** Users see spending breakdowns by merchant, identify top spending locations, and get suggestions for reducing costs at specific merchants.
+**AI/Automation Involved:** Merchant categorization, spending pattern analysis, and cost optimization recommendations for specific merchants.
+
+---
+**Feature Name:** Financial Health Scoring
+**What It Does:** Calculates a comprehensive financial health score based on spending habits, savings rate, and financial behaviors.
+**How It Works:** Analyzes multiple financial metrics to generate a health score, provides improvement recommendations, and tracks progress over time.
+**Files/Components Involved:**
+- src/components/analytics/FinancialHealthTab.tsx (health interface)
+- src/services/financialHealthService.ts (scoring logic)
+- src/components/analytics/health/HealthScoreGauge.tsx (score display)
+**How Users Interact With It:** Users view their financial health score, see contributing factors, and receive personalized recommendations for improvement.
+**AI/Automation Involved:** Multi-factor financial health analysis, personalized improvement recommendations, and progress tracking algorithms.
+
+---
+**Feature Name:** Tax Categorization
+**What It Does:** Automatically categorizes expenses for tax purposes, identifying deductible expenses and organizing them for tax preparation.
+**How It Works:** Analyzes transaction descriptions and categories to identify tax-deductible expenses, organizes them by tax categories, and generates tax-ready reports.
+**Files/Components Involved:**
+- src/components/analytics/TaxCategorizationTab.tsx (tax interface)
+- src/services/taxCategorizationService.ts (tax logic)
+- src/components/analytics/tax/DeductibleExpensesChart.tsx (tax charts)
+**How Users Interact With It:** Users view tax-categorized expenses, see potential deductions, and export tax-ready reports for their accountant or tax software.
+**AI/Automation Involved:** Intelligent tax category assignment, deduction identification, and automated tax report generation.
+
+---
+**Feature Name:** Data Export & Reporting
+**What It Does:** Allows users to export their financial data in various formats (PDF, CSV, Excel) for external use or record keeping.
+**How It Works:** Generates formatted reports and data exports based on user selections, with customizable date ranges and data filters.
+**Files/Components Involved:**
+- src/lib/exportUtils.ts (export logic)
+- src/components/analytics/shared/ExportButton.tsx (export interface)
+- src/components/admin/ExportDataButton.tsx (admin exports)
+**How Users Interact With It:** Users select data ranges and formats, then download exported files for use in other applications or for record keeping.
+**AI/Automation Involved:** Intelligent report formatting, automatic data summarization, and optimized export generation.
+
+---
+**Feature Name:** Support Ticket System
+**What It Does:** Integrated customer support system for users to submit questions, report issues, and get help.
+**How It Works:** Users can create support tickets, track their status, and communicate with support staff through the application.
+**Files/Components Involved:**
+- src/pages/admin/SupportTickets.tsx (admin ticket management)
+- src/services/supportTicketService.ts (ticket logic)
+- src/components/admin/TicketResponseForm.tsx (response interface)
+**How Users Interact With It:** Users submit support requests through forms, track ticket status, and receive responses within the application.
+**AI/Automation Involved:** Automatic ticket categorization, intelligent routing to appropriate support staff, and suggested responses for common issues.
+
+=== TECHNICAL ARCHITECTURE ===
+
+**Frontend Framework:** React 18 with TypeScript
+**UI Components:** shadcn/ui with Radix UI primitives
+**Styling:** Tailwind CSS with custom design system
+**State Management:** React Context API + React Query for server state
+**Database:** Supabase (PostgreSQL) with real-time subscriptions
+**Authentication:** Supabase Auth with role-based access control
+**AI Integration:** Google Gemini AI for text analysis and insights
+**File Processing:** PDF.js for PDF parsing, Tesseract.js for OCR
+**Charts:** ECharts and Recharts for data visualization
+**Payment Processing:** Paystack integration for subscriptions
+
+=== USER TYPES & ACCESS LEVELS ===
+
+**Free Users:** Basic expense tracking, limited AI queries, basic analytics
+**Premium Users:** Advanced analytics, unlimited AI queries, goal tracking, priority support
+**Lifetime Users (AppSumo):** All premium features permanently, early access to new features
+**Admin Users:** Full system access, user management, analytics, support tools
+
+=== KEY INTEGRATIONS ===
+
+**Google Gemini AI:** Powers financial advice, document processing, and intelligent insights
+**Supabase:** Handles authentication, database, real-time updates, and file storage
+**Paystack:** Processes subscription payments and billing
+**PDF.js:** Extracts text and data from PDF bank statements
+**Tesseract.js:** Performs OCR on receipt and statement images
+
+This comprehensive overview covers all major features and functionality in the SpendlyAI application. Each feature is designed to work together to provide users with a complete financial management solution powered by AI and modern web technologies.

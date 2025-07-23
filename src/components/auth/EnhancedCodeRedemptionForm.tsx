@@ -15,21 +15,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LTDPlanType } from './LTDPlanSelection';
 
 // Define the form schema with validation rules
-const formSchema = z.object({
+const createFormSchema = (source: 'appsumo' | 'dealmirror' = 'appsumo') => z.object({
   code: z.string()
-    .min(8, { message: 'AppSumo code is required' })
+    .min(8, { message: `${source === 'dealmirror' ? 'DealMirror' : 'AppSumo'} code is required` })
     .refine(val => {
       // Support both AS-XXXXXX format and 15-character format
       const oldFormatPattern = /^AS-[A-Z0-9]{6,}$/i;
       const newFormatPattern = /^[A-Z0-9]{15}$/;
       return oldFormatPattern.test(val) || newFormatPattern.test(val);
     }, {
-      message: 'Invalid AppSumo code format. Should be like AS-XXXXXX or 15-character code',
+      message: `Invalid ${source === 'dealmirror' ? 'DealMirror' : 'AppSumo'} code format. Should be like AS-XXXXXX or 15-character code`,
     }),
 });
 
 // Define the form values type from the schema
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
 
 // Plan display names
 const PLAN_NAMES: Record<LTDPlanType, string> = {
@@ -66,12 +66,14 @@ interface EnhancedCodeRedemptionFormProps {
   selectedPlan: LTDPlanType;
   onSuccess?: () => void;
   onBack?: () => void;
+  source?: 'appsumo' | 'dealmirror';
 }
 
 export function EnhancedCodeRedemptionForm({ 
   selectedPlan, 
   onSuccess, 
-  onBack 
+  onBack,
+  source = 'appsumo'
 }: EnhancedCodeRedemptionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -81,6 +83,7 @@ export function EnhancedCodeRedemptionForm({
   const { user } = useAuth();
 
   // Initialize the form with validation
+  const formSchema = createFormSchema(source);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -93,7 +96,7 @@ export function EnhancedCodeRedemptionForm({
     console.log('Form submission started:', { code: data.code.trim(), selectedPlan, userId: user?.id });
     
     if (!user) {
-      setServerError('You must be logged in to redeem an AppSumo code');
+      setServerError(`You must be logged in to redeem a ${source === 'dealmirror' ? 'DealMirror' : 'AppSumo'} code`);
       return;
     }
 
@@ -108,7 +111,8 @@ export function EnhancedCodeRedemptionForm({
       const result = await appSumoService.redeemCodeWithPlan({
         code: data.code.trim(),
         planType: selectedPlan,
-        userId: user.id
+        userId: user.id,
+        source: source
       });
 
       console.log('Service response:', result);

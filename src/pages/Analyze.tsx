@@ -18,6 +18,7 @@ import { SaveAnalysisDialog } from '@/components/SaveAnalysisDialog';
 import { SavedAnalyses } from '@/components/SavedAnalyses';
 import Navbar from '@/components/Navbar';
 import { MerchantAnalytics } from '@/components/MerchantAnalytics';
+import { ViewMoreAdvancedDataButton } from '@/components/analytics/ViewMoreAdvancedDataButton';
 
 const processCategoriesFromTransactions = (transactions: BankTransaction[]) => {
   const categoryMap = new Map();
@@ -583,15 +584,21 @@ const Analyze = () => {
             </div>
             
             <Tabs defaultValue="categories" className="animate-blur-in" style={{ animationDelay: '200ms' }}>
-              <TabsList className="mb-6">
-                <TabsTrigger value="categories">Categories</TabsTrigger>
-                <TabsTrigger value="transactions">Transactions</TabsTrigger>
-                <TabsTrigger value="merchants">Merchants</TabsTrigger>
-                {/* Add Merchant Analytics Tab Trigger */}
-                <TabsTrigger value="merchant-analytics">Merchant Analytics</TabsTrigger>
-                <TabsTrigger value="insights">AI Insights</TabsTrigger>
-                <TabsTrigger value="saved">Saved Analyses</TabsTrigger>
-              </TabsList>
+              <div className="flex justify-between items-center mb-6">
+                <TabsList>
+                  <TabsTrigger value="categories">Categories</TabsTrigger>
+                  <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                  <TabsTrigger value="merchants">Merchants</TabsTrigger>
+                  {/* Add Merchant Analytics Tab Trigger */}
+                  <TabsTrigger value="merchant-analytics">Merchant Analytics</TabsTrigger>
+                  <TabsTrigger value="insights">AI Insights</TabsTrigger>
+                  <TabsTrigger value="saved">Saved Analyses</TabsTrigger>
+                </TabsList>
+                
+                {useRealData && (
+                  <ViewMoreAdvancedDataButton />
+                )}
+              </div>
 
               <TabsContent value="categories">
                 <Card>

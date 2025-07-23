@@ -15,6 +15,7 @@ import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ExpenseTracker from '@/pages/ExpenseTracker';
 import AppSumoRedeem from '@/pages/AppSumoRedeem';
+import DealMirrorRedeem from '@/pages/DealMirrorRedeem';
 import { AdminRoot } from '@/components/admin/AdminRoot';
 
 // Import admin routes
@@ -29,6 +30,7 @@ const Charts = lazy(() => import('@/pages/Charts'));
 const Compare = lazy(() => import('@/pages/Compare'));
 const AdvancedAnalytics = lazy(() => import('@/pages/AdvancedAnalytics'));
 const AdvancedAnalysis = lazy(() => import('@/pages/AdvancedAnalysis'));
+const MoreAnalyticsPage = lazy(() => import('@/pages/MoreAnalyticsPage'));
 const FinancialGoals = lazy(() => import('@/pages/FinancialGoals'));
 const AIFinancialAdvisor = lazy(() => import('@/pages/AIFinancialAdvisor'));
 const Transactions = lazy(() => import('@/pages/Transactions'));
@@ -142,6 +144,10 @@ const appRoutes = [
             element: <Suspense fallback={<LoadingSpinner />}><AdvancedAnalysis /></Suspense>
           },
           {
+            path: 'more-analytics',
+            element: <Suspense fallback={<LoadingSpinner />}><MoreAnalyticsPage /></Suspense>
+          },
+          {
             path: 'financial-goals',
             element: <Suspense fallback={<LoadingSpinner />}><FinancialGoals /></Suspense>
           },
@@ -174,6 +180,10 @@ const appRoutes = [
       {
         path: '/redeem',
         element: <AppSumoRedeem />
+      },
+      {
+        path: '/dealmirror',
+        element: <DealMirrorRedeem />
       },
       {
         path: '*',
