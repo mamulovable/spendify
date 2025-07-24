@@ -211,7 +211,7 @@ const PlanComparisonTable = () => {
                 onClick={() => setPlanType('ltd')}
               >
                 <Gift className="h-3 w-3 mr-1" />
-                AppSumo LTD
+                Lifetime plan LTD
               </Button>
               <Button
                 variant="ghost"
@@ -495,7 +495,7 @@ const PlanComparisonTable = () => {
         {/* LTD disclaimer */}
         {planType === 'ltd' && (
           <div className="mt-4 text-xs text-muted-foreground text-center">
-            <p>AppSumo Lifetime Deal - One-time payment, lifetime access. Limited time offer.</p>
+            <p> Lifetime Deal - One-time payment, lifetime access. Limited time offer.</p>
           </div>
         )}
       </div>

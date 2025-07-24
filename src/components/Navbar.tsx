@@ -87,7 +87,7 @@ const Navbar = () => {
         <div className="flex flex-col gap-6 mt-6">
           <Link to="/" className="flex items-center gap-2">
             <Receipt className="w-6 h-6 text-primary" />
-            <span className="text-xl font-semibold text-foreground">AI Expense Buddy</span>
+            <span className="text-xl font-semibold text-foreground">Spendify</span>
           </Link>
           
           <nav className="flex flex-col space-y-1">
@@ -111,7 +111,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <NavLink to="/redeem" label="AppSumo Deal" icon={Gift} color="text-emerald-500" />
+               
                 <NavLink to="/auth" label="Sign In" icon={LogIn} />
               </>
             )}
@@ -165,7 +165,7 @@ const Navbar = () => {
                     </>
                   ) : (
                     <>
-                      <NavLink to="/redeem" label="AppSumo Deal" icon={Gift} color="text-emerald-500" />
+                      <NavLink to="/redeem" label="Lifetime Deal" icon={Gift} color="text-emerald-500" />
                       <NavLink to="/auth" label="Sign In" icon={LogIn} />
                     </>
                   )}
@@ -175,7 +175,7 @@ const Navbar = () => {
           </Sheet>
           <Link to="/" className="flex items-center gap-2">
             <Receipt className="w-5 h-5 text-primary" />
-            <span className="text-lg font-semibold text-foreground hidden sm:inline">AI Expense Buddy</span>
+            <span className="text-lg font-semibold text-foreground hidden sm:inline">Spendify</span>
           </Link>
         </div>
         
@@ -270,9 +270,9 @@ const Navbar = () => {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link to="/redeem" className="gap-2">
+                <Link to="/dealmirror" className="gap-2">
                   <Gift className="h-4 w-4" />
-                  <span className="hidden sm:inline">AppSumo Deal</span>
+                  <span className="hidden sm:inline">Lifetime Deal</span>
                 </Link>
               </Button>
               <Button asChild size="sm">
