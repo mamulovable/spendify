@@ -36,7 +36,9 @@ const Auth = () => {
   const [currentOnboardingStep, setCurrentOnboardingStep] = useState(0); 
   const [onboardingAnswers, setOnboardingAnswers] = useState<Partial<OnboardingAnswers>>({}); 
   
-  const from = (location.state as any)?.from?.pathname || '/dashboard';
+  const searchParams = new URLSearchParams(location.search);
+  const redirectUrl = searchParams.get('redirect');
+  const from = redirectUrl || (location.state as any)?.from?.pathname || '/dashboard';
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

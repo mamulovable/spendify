@@ -14,6 +14,7 @@ import Navbar from '@/components/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PLANS, DURATIONS, calculatePrice, formatPrice } from '@/config/pricing';
+import NewFeatures from '@/components/features/NewFeatures';
 
 const Index = () => {
   const { user } = useAuth();
@@ -341,6 +342,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <NewFeatures />
       
       {/* Who can use it section */}
       <section className="py-24 px-6">
