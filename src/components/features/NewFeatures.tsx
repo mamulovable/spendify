@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { ShieldAlert, CalendarClock, TrendingUp, Store, HeartPulse, Receipt, ArrowRight } from 'lucide-react';
 import ScamAlertsVisual from './ScamAlertsVisual';
 import RecurringExpensesVisual from './RecurringExpensesVisual';
@@ -10,6 +12,7 @@ import TaxCategorizationVisual from './TaxCategorizationVisual';
 
 const features = [
   {
+    id: 'security',
     title: 'Scam Alerts & Security',
     description: 'Monitor and protect your accounts from suspicious activities.',
     icon: ShieldAlert,
@@ -18,6 +21,7 @@ const features = [
     color: 'text-red-400',
   },
   {
+    id: 'recurring',
     title: 'Recurring Expenses',
     description: 'Identify and manage subscription services and recurring payments.',
     icon: CalendarClock,
@@ -26,6 +30,7 @@ const features = [
     color: 'text-blue-400',
   },
   {
+    id: 'cashflow',
     title: 'Cash Flow Analysis',
     description: 'Analyze money flow in and out of your accounts.',
     icon: TrendingUp,
@@ -34,6 +39,7 @@ const features = [
     color: 'text-green-400',
   },
   {
+    id: 'merchants',
     title: 'Merchant Intelligence',
     description: 'Deep dive into your spending at specific merchants and vendors.',
     icon: Store,
@@ -42,6 +48,7 @@ const features = [
     color: 'text-purple-400',
   },
   {
+    id: 'health',
     title: 'Financial Health Score',
     description: 'Overall assessment of your financial wellness.',
     icon: HeartPulse,
@@ -50,6 +57,7 @@ const features = [
     color: 'text-teal-400',
   },
   {
+    id: 'tax',
     title: 'Tax & Expense Categorization',
     description: 'Help with tax preparation and business expense tracking.',
     icon: Receipt,
@@ -60,6 +68,9 @@ const features = [
 ];
 
 const NewFeatures = () => {
+  const [activeTab, setActiveTab] = useState(features[0].id);
+  const activeFeature = features.find(f => f.id === activeTab);
+
   return (
     <section className="py-24 px-6 bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto">
@@ -70,31 +81,58 @@ const NewFeatures = () => {
             Unlock a deeper understanding of your finances with our new suite of AI-powered analytics tools.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Link to={`/auth?redirect=${encodeURIComponent(feature.link)}`} key={index} className="block bg-gray-800/50 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 flex flex-col no-underline text-white">
-              <div className="p-6 flex-grow">
-                <div className="flex items-center mb-4">
-                  <div className={`p-2 rounded-full bg-gray-700 mr-4 ${feature.color}`}>
-                    <feature.icon className="w-6 h-6" />
+
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="md:w-1/3">
+            <div className="sticky top-32 space-y-2">
+              {features.map(feature => (
+                <button
+                  key={feature.id}
+                  onClick={() => setActiveTab(feature.id)}
+                  className={cn(
+                    "w-full text-left p-4 rounded-lg flex items-center transition-all duration-300",
+                    activeTab === feature.id
+                      ? "bg-primary/10 border border-primary/20"
+                      : "hover:bg-gray-800/50"
+                  )}
+                >
+                  <div className="mr-4">
+                    <div className={cn(
+                      "rounded-full p-2 w-10 h-10 flex items-center justify-center",
+                       activeTab === feature.id ? "bg-primary/20" : "bg-gray-700",
+                       feature.color
+                    )}>
+                      <feature.icon className="w-5 h-5" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold">{feature.title}</h3>
-                </div>
-                <p className="text-muted-foreground mb-4 h-12">{feature.description}</p>
-                <div className="h-48 mb-4 rounded-lg overflow-hidden border border-gray-700">
-                  {feature.visual}
+                  <div>
+                    <h3 className="font-medium mb-1">{feature.title}</h3>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="md:w-2/3">
+            {activeFeature && (
+              <div className="bg-gray-800/50 rounded-lg shadow-lg p-6">
+                <h3 className="text-2xl font-bold mb-2">{activeFeature.title}</h3>
+                <p className="text-muted-foreground mb-6">{activeFeature.description}</p>
+                <div className="h-72 rounded-lg overflow-hidden border border-gray-700">
+                  {activeFeature.visual}
                 </div>
               </div>
-            </Link>
-          ))}
+            )}
+          </div>
         </div>
+
         <div className="text-center mt-16">
-            <Link to="/auth?redirect=/dashboard/more-analytics">
-                <Button size="lg" className="rounded-md px-8 gap-2 h-12 bg-primary hover:bg-primary/90 text-primary-foreground">
-                    View All Analytics
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-            </Link>
+          <Link to="/auth?redirect=/dashboard/more-analytics">
+            <Button size="lg" className="rounded-md px-8 gap-2 h-12 bg-primary hover:bg-primary/90 text-primary-foreground">
+              View All Analytics
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
