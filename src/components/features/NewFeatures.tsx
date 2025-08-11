@@ -113,12 +113,12 @@ const NewFeatures = () => {
             </div>
           </div>
 
-          <div className="md:w-2/3">
+          <div className="md:w-2/3 md:h-[520px]">
             {activeFeature && (
-              <div className="bg-gray-800/50 rounded-lg shadow-lg p-6">
+              <div className="bg-gray-800/50 rounded-lg shadow-lg p-6 h-full flex flex-col">
                 <h3 className="text-2xl font-bold mb-2">{activeFeature.title}</h3>
                 <p className="text-muted-foreground mb-6">{activeFeature.description}</p>
-                <div className="h-72 rounded-lg overflow-hidden border border-gray-700">
+                <div className="flex-grow rounded-lg overflow-hidden border border-gray-700">
                   {activeFeature.visual}
                 </div>
               </div>

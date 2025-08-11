@@ -1,35 +1,56 @@
-import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight, Minus, Plus } from 'lucide-react';
 
 const CashFlowVisual = () => {
   return (
-    <div className="w-full h-full bg-gray-800 p-4 rounded-lg text-white font-sans">
-      <div className="flex items-center mb-4">
-        <TrendingUp className="w-5 h-5 text-green-400 mr-2" />
-        <h3 className="text-md font-bold text-gray-100">Cash Flow Analysis</h3>
+    <div className="w-full h-full bg-gray-800 p-4 rounded-lg text-white font-sans flex flex-col">
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Total Income</p>
+          <p className="text-lg font-bold text-green-400">$6,000</p>
+        </div>
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Total Expenses</p>
+          <p className="text-lg font-bold text-red-400">$4,500</p>
+        </div>
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Net Flow</p>
+          <p className="text-lg font-bold text-green-400">$1,500</p>
+        </div>
       </div>
-      <div className="space-y-3">
-        <div className="flex justify-between items-center bg-gray-700/50 p-2 rounded-md text-sm">
-            <span className="flex items-center text-green-400"><TrendingUp className="w-4 h-4 mr-1"/> Income</span>
-            <span className="font-mono text-gray-100">$6,000</span>
-        </div>
-         <div className="flex justify-between items-center bg-gray-700/50 p-2 rounded-md text-sm">
-            <span className="flex items-center text-red-400"><TrendingDown className="w-4 h-4 mr-1"/> Expenses</span>
-            <span className="font-mono text-gray-100">$4,500</span>
-        </div>
-        <div className="flex justify-between items-center bg-gray-700/50 p-2 rounded-md text-sm">
-            <span className="flex items-center text-blue-400"><ArrowRight className="w-4 h-4 mr-1"/> Net Cash Flow</span>
-            <span className="font-mono text-green-400">$1,500</span>
-        </div>
-        <div className="bg-gray-700/50 p-2 rounded-md">
-            <p className="text-sm text-gray-300 mb-1">Cash Flow Trend</p>
-            <div className="w-full h-10 bg-gray-600 rounded-md p-1">
-                <div className="w-full h-full flex items-end">
-                    <div className="w-1/4 h-1/2 bg-green-400/70 rounded-t-sm"></div>
-                    <div className="w-1/4 h-3/4 bg-green-400/70 rounded-t-sm ml-1"></div>
-                    <div className="w-1/4 h-1/2 bg-red-400/70 rounded-t-sm ml-1"></div>
-                    <div className="w-1/4 h-full bg-green-400/70 rounded-t-sm ml-1"></div>
-                </div>
+
+      <div className="grid grid-cols-2 gap-4 flex-grow">
+        {/* Cash Flow Waterfall Chart */}
+        <div className="bg-gray-700/50 p-3 rounded-md flex flex-col">
+          <h4 className="text-sm font-bold mb-2 text-gray-300">Income vs Expenses</h4>
+          <div className="flex-grow flex items-end justify-around text-xs">
+            <div className="text-center">
+              <div className="h-24 w-8 bg-green-400/70 rounded-t-sm"></div>
+              <p>Income</p>
             </div>
+            <div className="text-center">
+              <div className="h-16 w-8 bg-red-400/70 rounded-t-sm"></div>
+              <p>Housing</p>
+            </div>
+            <div className="text-center">
+              <div className="h-12 w-8 bg-red-400/70 rounded-t-sm"></div>
+              <p>Shopping</p>
+            </div>
+            <div className="text-center">
+              <div className="h-20 w-8 bg-green-400/70 rounded-t-sm"></div>
+              <p>Net</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Cash Flow Prediction */}
+        <div className="bg-gray-700/50 p-3 rounded-md flex flex-col">
+          <h4 className="text-sm font-bold mb-2 text-gray-300">Cash Flow Prediction</h4>
+           <div className="flex-grow flex flex-col justify-center text-center">
+                <p className="text-xs text-gray-400">Next 30 Days</p>
+                <p className="text-3xl font-bold text-green-400">+$850</p>
+                <p className="text-xs text-gray-400 mt-2">Based on your spending habits, your cash flow is projected to be positive.</p>
+           </div>
         </div>
       </div>
     </div>

@@ -1,30 +1,41 @@
-import { Receipt, PieChart } from 'lucide-react';
+import { Receipt, PieChart, BarChart } from 'lucide-react';
 
 const TaxCategorizationVisual = () => {
   return (
-    <div className="w-full h-full bg-gray-800 p-4 rounded-lg text-white font-sans">
-      <div className="flex items-center mb-4">
-        <Receipt className="w-5 h-5 text-indigo-400 mr-2" />
-        <h3 className="text-md font-bold text-gray-100">Tax Categorization</h3>
-      </div>
-      <div className="space-y-3">
-         <div className="bg-gray-700/50 p-2 rounded-md">
-          <p className="text-sm text-gray-300 mb-2 flex items-center"><PieChart className="w-4 h-4 text-indigo-400 mr-1" /> Expense Categories</p>
-           <div className="w-full h-16 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full" style={{backgroundImage: 'conic-gradient(#6366f1, #ec4899, #f97316)'}}></div>
-           </div>
+    <div className="w-full h-full bg-gray-800 p-4 rounded-lg text-white font-sans flex flex-col">
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Deductible</p>
+          <p className="text-lg font-bold text-indigo-400">$1,250</p>
         </div>
-        <div className="bg-gray-700/50 p-2 rounded-md">
-          <p className="text-sm text-gray-300 mb-2">Potential Deductions</p>
-          <div className="text-xs space-y-1 text-gray-400">
-            <div className="flex justify-between">
-              <span>Home Office</span>
-              <span className="font-mono text-indigo-400">$350</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Business Meals</span>
-              <span className="font-mono text-indigo-400">$150</span>
-            </div>
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Transactions</p>
+          <p className="text-lg font-bold">15</p>
+        </div>
+        <div className="bg-gray-700/50 p-2 rounded-md text-center">
+          <p className="text-xs text-gray-400">Categories</p>
+          <p className="text-lg font-bold">4</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 flex-grow">
+        {/* Tax Category Pie Chart */}
+        <div className="bg-gray-700/50 p-3 rounded-md flex flex-col">
+          <h4 className="text-sm font-bold mb-2 text-gray-300">Expense Categories</h4>
+          <div className="flex-grow flex items-center justify-center">
+             <div className="w-24 h-24 rounded-full" style={{backgroundImage: 'conic-gradient(#6366f1, #ec4899, #f97316)'}}></div>
+          </div>
+        </div>
+
+        {/* Deductible Expenses Chart */}
+        <div className="bg-gray-700/50 p-3 rounded-md flex flex-col">
+          <h4 className="text-sm font-bold mb-2 text-gray-300">Deductibles Over Time</h4>
+          <div className="flex-grow flex items-end justify-around text-xs">
+            <div className="h-12 w-8 bg-indigo-400/70 rounded-t-sm"></div>
+            <div className="h-16 w-8 bg-indigo-400/70 rounded-t-sm"></div>
+            <div className="h-8 w-8 bg-indigo-400/70 rounded-t-sm"></div>
+            <div className="h-20 w-8 bg-indigo-400/70 rounded-t-sm"></div>
           </div>
         </div>
       </div>
