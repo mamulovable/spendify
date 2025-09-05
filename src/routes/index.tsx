@@ -43,6 +43,7 @@ const Blog = lazy(() => import('@/pages/Blog'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const ThankYou = lazy(() => import('@/pages/ThankYou'));
 const FAQ = lazy(() => import('@/pages/FAQ'));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -94,6 +95,10 @@ const appRoutes = [
       {
         path: '/faq',
         element: <Suspense fallback={<LoadingSpinner />}><FAQ /></Suspense>
+      },
+      {
+        path: '/privacy-policy',
+        element: <Suspense fallback={<LoadingSpinner />}><PrivacyPolicy /></Suspense>
       },
       {
         path: '/auth',

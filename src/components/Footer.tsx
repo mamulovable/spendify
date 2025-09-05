@@ -70,6 +70,11 @@ const Footer = () => {
                   Contact Us
                 </Link>
               </li>
+              <li>
+                <Link to="/privacy-policy" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
