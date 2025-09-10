@@ -183,7 +183,7 @@ const appRoutes = [
         element: <ProtectedRoute><ExpenseTracker /></ProtectedRoute>
       },
       {
-        path: '/redeem',
+        path: '/dealify',
         element: <DealifyRedeem />
       },
       {
