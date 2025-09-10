@@ -33,120 +33,72 @@ interface PlanPricing {
 
 // Define plan features
 const planFeatures: PlanFeature[] = [
-  {
-    name: 'Expense Tracking',
-    description: 'Track and categorize your expenses',
-    tiers: {
-      basic: true,
-      premium: true,
-      ultimate: true,
+    {
+        name: 'Upload statements per month',
+        tiers: { basic: '80', premium: '200', ultimate: 'Unlimited' }
     },
-  },
-  {
-    name: 'Monthly Transactions',
-    tiers: {
-      basic: '50',
-      premium: '200',
-      ultimate: 'Unlimited',
+    {
+        name: 'AI Transaction Categorization',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Document Processing',
-    description: 'OCR and automatic data extraction',
-    tiers: {
-      basic: '10/month',
-      premium: '50/month',
-      ultimate: 'Unlimited',
+    {
+        name: 'Saved Analyses',
+        tiers: { basic: '20', premium: '50', ultimate: 'Unlimited' }
     },
-  },
-  {
-    name: 'AI Financial Advisor',
-    description: 'Get personalized financial advice',
-    tiers: {
-      basic: false,
-      premium: true,
-      ultimate: true,
+    {
+        name: 'AI Financial Insights',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'AI Queries',
-    description: 'Number of AI advisor queries per month',
-    tiers: {
-      basic: '0',
-      premium: '20',
-      ultimate: 'Unlimited',
+    {
+        name: 'Budget Comparison Tool',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Budget Templates',
-    tiers: {
-      basic: '3',
-      premium: '10',
-      ultimate: 'Unlimited',
+    {
+        name: 'Saved Analyses Archive',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Advanced Analytics',
-    tiers: {
-      basic: false,
-      premium: true,
-      ultimate: true,
+    {
+        name: 'Chart Visualizations',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Data Export',
-    tiers: {
-      basic: false,
-      premium: true,
-      ultimate: true,
+    {
+        name: 'Goal Setting',
+        tiers: { basic: true, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Financial Goals',
-    tiers: {
-      basic: '2',
-      premium: '10',
-      ultimate: 'Unlimited',
+    {
+        name: 'Full budgeting & analytics access',
+        tiers: { basic: false, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Custom Categories',
-    tiers: {
-      basic: '5',
-      premium: '20',
-      ultimate: 'Unlimited',
+    {
+        name: 'Custom Categories',
+        tiers: { basic: false, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Priority Support',
-    tiers: {
-      basic: false,
-      premium: false,
-      ultimate: true,
+    {
+        name: 'AI Financial Advisor',
+        description: 'Get personalized financial advice',
+        tiers: { basic: false, premium: true, ultimate: true }
     },
-  },
-  {
-    name: 'Future Updates',
-    description: 'Access to all future features and improvements',
-    tiers: {
-      basic: 'Limited',
-      premium: 'Most',
-      ultimate: 'All',
+    {
+        name: 'AI Advisor Queries',
+        tiers: { basic: false, premium: '10', ultimate: 'Unlimited' }
     },
-  },
+    {
+        name: 'Priority feature requests & roadmap access',
+        tiers: { basic: false, premium: false, ultimate: true }
+    },
 ];
 
 // Define plan pricing
 const planPricing: PlanPricing = {
   regular: {
-    basic: { monthly: 9.99, yearly: 99.99 },
-    premium: { monthly: 19.99, yearly: 199.99 },
-    ultimate: { monthly: 39.99, yearly: 399.99 },
+    basic: { monthly: 9, yearly: 90 },
+    premium: { monthly: 15, yearly: 150 },
+    ultimate: { monthly: 49, yearly: 490 },
   },
   ltd: {
-    basic: 49,
-    premium: 99,
-    ultimate: 149,
+    basic: 59,
+    premium: 89,
+    ultimate: 299,
   },
 };
 
@@ -264,7 +216,7 @@ const PlanComparisonTable = () => {
                 <th className="text-left py-4 px-4 font-medium text-muted-foreground">Features</th>
                 <th className="py-4 px-4 w-[22%]">
                   <div className="flex flex-col items-center">
-                    <div className="text-sm font-medium">Basic</div>
+                    <div className="text-sm font-medium">Mini</div>
                     <div className="mt-1 flex items-center justify-center">
                       {planType === 'ltd' ? (
                         <div className="text-lg font-bold">${planPricing.ltd.basic}</div>
@@ -292,7 +244,7 @@ const PlanComparisonTable = () => {
                         Most Popular
                       </div>
                     </div>
-                    <div className="text-sm font-medium">Premium</div>
+                    <div className="text-sm font-medium">Solo</div>
                     <div className="mt-1 flex items-center justify-center">
                       {planType === 'ltd' ? (
                         <div className="text-lg font-bold">${planPricing.ltd.premium}</div>
@@ -314,7 +266,7 @@ const PlanComparisonTable = () => {
                 </th>
                 <th className="py-4 px-4 w-[22%]">
                   <div className="flex flex-col items-center">
-                    <div className="text-sm font-medium">Ultimate</div>
+                    <div className="text-sm font-medium">Pro</div>
                     <div className="mt-1 flex items-center justify-center">
                       {planType === 'ltd' ? (
                         <div className="text-lg font-bold">${planPricing.ltd.ultimate}</div>
@@ -476,18 +428,18 @@ const PlanComparisonTable = () => {
         <div className="mt-6 grid grid-cols-3 gap-4">
           <div className="text-center">
             <Button variant="outline" size="sm" className="w-full">
-              Get Basic
+              Get Mini
             </Button>
           </div>
           <div className="text-center">
             <Button size="sm" className="w-full bg-primary">
               <Star className="h-3 w-3 mr-1" />
-              Get Premium
+              Get Solo
             </Button>
           </div>
           <div className="text-center">
             <Button variant="outline" size="sm" className="w-full">
-              Get Ultimate
+              Get Pro
             </Button>
           </div>
         </div>
