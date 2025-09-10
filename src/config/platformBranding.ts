@@ -146,10 +146,60 @@ export const DEALMIRROR_BRANDING: PlatformBranding = {
   }
 };
 
+// Dealify branding configuration
+export const DEALIFY_BRANDING: PlatformBranding = {
+  name: 'Dealify',
+  slug: 'dealify',
+  colors: {
+    primary: 'hsl(221, 83%, 53%)',
+    accent: 'hsl(221, 83%, 53%)'
+  },
+  messaging: {
+    banner: 'Exclusive Dealify Lifetime Deal - Limited Time Offer',
+    hero: {
+      badge: 'Dealify Exclusive Lifetime Deal',
+      title: 'Transform Your Finances with SpendlyAI Lifetime Access',
+      subtitle: 'SpendlyAI',
+      description: 'Unlock the power of AI-driven financial insights forever through Dealify. One payment, lifetime access to the smartest expense tracking and financial management platform.'
+    },
+    benefits: {
+      title: 'Your Dealify Lifetime Deal Benefits',
+      description: 'Exclusive lifetime access to premium features at a one-time price through Dealify.',
+      cta: {
+        title: "Don't Miss This Limited-Time Offer",
+        description: 'Dealify deals are available for a limited time only. Lock in your lifetime access to SpendlyAI today and never worry about subscription fees again.',
+        button: 'Claim Your Lifetime Deal Now'
+      }
+    },
+    exclusiveBadges: {
+      hero: 'Dealify Exclusive',
+      feature: 'Dealify Exclusive',
+      lifetime: 'Lifetime Access'
+    }
+  },
+  support: {
+    reference: 'Dealify support',
+    helpText: [
+      'Make sure your code matches the plan you selected',
+      'Check that the code hasn\'t been used before',
+      'Ensure you\'re entering the correct Dealify code',
+      'Contact Dealify support if you continue having issues'
+    ],
+    contactInfo: 'Contact Dealify support for assistance with your code redemption.'
+  },
+  breadcrumb: 'Dealify Lifetime Deal',
+  metaTags: {
+    title: 'SpendlyAI - Exclusive Dealify Lifetime Deal',
+    description: 'Get lifetime access to SpendlyAI through Dealify. AI-powered expense tracking, financial insights, and budget management - one payment, forever.',
+    keywords: 'Dealify, SpendlyAI, lifetime deal, expense tracking, financial management, AI advisor'
+  }
+};
+
 // Platform branding registry
 export const PLATFORM_BRANDING: Record<string, PlatformBranding> = {
   appsumo: APPSUMO_BRANDING,
-  dealmirror: DEALMIRROR_BRANDING
+  dealmirror: DEALMIRROR_BRANDING,
+  dealify: DEALIFY_BRANDING
 };
 
 // Helper function to get branding by platform slug

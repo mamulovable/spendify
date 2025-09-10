@@ -13,6 +13,7 @@ export const AuthContext = createContext<{
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   isAppSumoUser: boolean;
+  isDealifyUser: boolean;
 }>({
   user: null,
   session: null,
@@ -21,6 +22,7 @@ export const AuthContext = createContext<{
   signIn: async () => {},
   signOut: async () => {},
   isAppSumoUser: false,
+  isDealifyUser: false,
 });
 
 // Provider component that wraps the app and makes auth available
@@ -34,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check if the user is an AppSumo user
   const isAppSumoUser = !!authState.user?.user_metadata?.is_appsumo_user;
+  const isDealifyUser = !!authState.user?.user_metadata?.is_dealify_user;
 
   useEffect(() => {
     // Get the initial session
@@ -151,6 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signIn,
     signOut,
     isAppSumoUser,
+    isDealifyUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
