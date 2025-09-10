@@ -17,23 +17,23 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
 /**
- * AppSumo LTD Redemption Landing Page
+ * Dealify LTD Redemption Landing Page
  * 
- * This page serves as the landing page for AppSumo customers to:
+ * This page serves as the landing page for Dealify customers to:
  * - Learn about SpendlyAI features through interactive visualizations
  * - Understand LTD benefits
  * - Register for an account
- * - Redeem their AppSumo codes
+ * - Redeem their Dealify codes
  * 
  * Requirements:
- * - 1.1: Display dedicated AppSumo LTD landing page at /redeem
+ * - 1.1: Display dedicated Dealify LTD landing page at /redeem
  * - 1.5: Maintain consistent branding with main application
  * - 8.1: Fully responsive layout for all device sizes
  */
-const AppSumoRedeem = () => {
+const DealifyRedeem = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAppSumoUser } = useAuth();
+  const { user, isDealifyUser } = useAuth();
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeButton, setActiveButton] = useState<'register' | 'signin' | null>(null);
   
@@ -123,12 +123,12 @@ const AppSumoRedeem = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* AppSumo Banner */}
+      {/* Dealify Banner */}
       <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-sm">
         <Container>
           <div className="flex items-center justify-center gap-2">
             <Gift className="h-4 w-4" />
-            <span>Exclusive AppSumo Lifetime Deal - Limited Time Offer</span>
+            <span>Exclusive Dealify Lifetime Deal - Limited Time Offer</span>
           </div>
         </Container>
       </div>
@@ -139,7 +139,7 @@ const AppSumoRedeem = () => {
           <nav className="flex items-center text-sm">
             <Link to="/" className="text-muted-foreground hover:text-foreground">Home</Link>
             <ChevronRight className="h-4 w-4 mx-2 text-muted-foreground" />
-            <span className="font-medium">AppSumo Lifetime Deal</span>
+            <span className="font-medium">Dealify Lifetime Deal</span>
           </nav>
         </Container>
       </div>
@@ -157,7 +157,7 @@ const AppSumoRedeem = () => {
             <div className="space-y-6">
               <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium animate-pulse">
                 <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
-                AppSumo Exclusive Lifetime Deal
+                Dealify Exclusive Lifetime Deal
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Transform Your Finances with <span className="text-primary">SpendlyAI</span> Lifetime Access
@@ -239,7 +239,7 @@ const AppSumoRedeem = () => {
                     
                     <div className="mt-4 flex justify-center">
                       <div className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full">
-                        AppSumo Exclusive
+                        Dealify Exclusive
                       </div>
                     </div>
                   </div>
@@ -254,7 +254,7 @@ const AppSumoRedeem = () => {
               <div className="hidden md:flex absolute -bottom-4 -right-4 bg-background shadow-lg rounded-lg px-3 py-2 border border-border">
                 <div className="flex items-center gap-2">
                   <Gift className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">AppSumo Exclusive</span>
+                  <span className="text-sm font-medium">Dealify Exclusive</span>
                 </div>
               </div>
               <div className="hidden md:flex absolute -top-4 -left-4 bg-background shadow-lg rounded-lg px-3 py-2 border border-border">
@@ -334,7 +334,7 @@ const AppSumoRedeem = () => {
       <section id="benefits" className="py-16">
         <Container>
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Your AppSumo Lifetime Deal Benefits</h2>
+            <h2 className="text-3xl font-bold mb-4">Your Dealify Lifetime Deal Benefits</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Exclusive lifetime access to premium features at a one-time price.
             </p>
@@ -383,8 +383,8 @@ const AppSumoRedeem = () => {
                 delay: 400
               },
               {
-                title: "Exclusive AppSumo Bonuses",
-                description: "Special perks and bonuses available only to AppSumo LTD customers.",
+                title: "Exclusive Dealify Bonuses",
+                description: "Special perks and bonuses available only to Dealify LTD customers.",
                 icon: "gift",
                 color: "bg-pink-500/10 text-pink-500",
                 delay: 500
@@ -420,7 +420,7 @@ const AppSumoRedeem = () => {
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 border border-primary/20 text-center">
             <h3 className="text-xl font-medium mb-3">Don't Miss This Limited-Time Offer</h3>
             <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
-              AppSumo deals are available for a limited time only. Lock in your lifetime access to SpendlyAI today and never worry about subscription fees again.
+              Dealify deals are available for a limited time only. Lock in your lifetime access to SpendlyAI today and never worry about subscription fees again.
             </p>
             <Button 
               size="lg" 
@@ -440,7 +440,7 @@ const AppSumoRedeem = () => {
           <div className="max-w-md mx-auto bg-background rounded-lg p-8 shadow-sm border border-border/50">
             <h2 className="text-2xl font-bold mb-6 text-center">Register Your Account</h2>
             <p className="text-center text-muted-foreground mb-6">
-              Create your SpendlyAI account to redeem your AppSumo code.
+              Create your SpendlyAI account to redeem your Dealify code.
             </p>
             <RegistrationForm 
               onSuccess={handleAuthSuccess}
@@ -456,7 +456,7 @@ const AppSumoRedeem = () => {
           <div className="max-w-md mx-auto bg-background rounded-lg p-8 shadow-sm border border-border/50">
             <h2 className="text-2xl font-bold mb-6 text-center">Sign In to Your Account</h2>
             <p className="text-center text-muted-foreground mb-6">
-              Sign in to your existing account to redeem your AppSumo code.
+              Sign in to your existing account to redeem your Dealify code.
             </p>
             <SignInForm 
               onSuccess={handleAuthSuccess}
@@ -472,9 +472,9 @@ const AppSumoRedeem = () => {
           <div className="max-w-2xl mx-auto bg-background rounded-lg p-8 shadow-sm border border-border/50">
             {!user && (
               <div className="text-center">
-                <h2 className="text-2xl font-bold mb-6">Get Started with Your AppSumo Deal</h2>
+                <h2 className="text-2xl font-bold mb-6">Get Started with Your Dealify Deal</h2>
                 <p className="text-muted-foreground mb-6">
-                  You need to be signed in to redeem your AppSumo code.
+                  You need to be signed in to redeem your Dealify code.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button 
@@ -496,12 +496,12 @@ const AppSumoRedeem = () => {
               </div>
             )}
             
-            {user && isAppSumoUser && (
+            {user && isDealifyUser && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
                 <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                <h3 className="text-xl font-medium text-green-800 mb-2">AppSumo Code Already Redeemed</h3>
+                <h3 className="text-xl font-medium text-green-800 mb-2">Dealify Code Already Redeemed</h3>
                 <p className="text-green-700 mb-4">
-                  Your account is already activated with an AppSumo lifetime plan.
+                  Your account is already activated with an Dealify lifetime plan.
                 </p>
                 <Button 
                   onClick={() => navigate('/dashboard')}
@@ -512,7 +512,7 @@ const AppSumoRedeem = () => {
               </div>
             )}
             
-            {user && !isAppSumoUser && (
+            {user && !isDealifyUser && (
               <>
                 {/* Plan Selection Step */}
                 {currentStep === 'plan-selection' && (
@@ -536,7 +536,7 @@ const AppSumoRedeem = () => {
                   <div className="text-center">
                     <h2 className="text-2xl font-bold mb-6">Choose Your Plan</h2>
                     <p className="text-muted-foreground mb-6">
-                      Select your AppSumo LTD plan to get started.
+                      Select your Dealify LTD plan to get started.
                     </p>
                     <Button 
                       onClick={() => setCurrentStep('plan-selection')}
@@ -558,7 +558,7 @@ const AppSumoRedeem = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Common questions about the AppSumo deal and redemption process.
+              Common questions about the Dealify deal and redemption process.
             </p>
           </div>
           <div className="max-w-3xl mx-auto bg-background rounded-lg p-6 shadow-sm border border-border/50">
@@ -583,4 +583,4 @@ const AppSumoRedeem = () => {
   );
 };
 
-export default AppSumoRedeem;
+export default DealifyRedeem;

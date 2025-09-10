@@ -14,7 +14,7 @@ import PaystackTest from '@/pages/PaystackTest';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ExpenseTracker from '@/pages/ExpenseTracker';
-import AppSumoRedeem from '@/pages/AppSumoRedeem';
+import DealifyRedeem from '@/pages/DealifyRedeem';
 import DealMirrorRedeem from '@/pages/DealMirrorRedeem';
 import { AdminRoot } from '@/components/admin/AdminRoot';
 
@@ -184,7 +184,7 @@ const appRoutes = [
       },
       {
         path: '/redeem',
-        element: <AppSumoRedeem />
+        element: <DealifyRedeem />
       },
       {
         path: '/dealmirror',
