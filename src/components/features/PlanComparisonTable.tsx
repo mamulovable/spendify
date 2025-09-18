@@ -35,7 +35,7 @@ interface PlanPricing {
 const planFeatures: PlanFeature[] = [
     {
         name: 'Upload statements per month',
-        tiers: { basic: '80', premium: '200', ultimate: 'Unlimited' }
+        tiers: { basic: '90', premium: '200', ultimate: 'Unlimited' }
     },
     {
         name: 'AI Transaction Categorization',

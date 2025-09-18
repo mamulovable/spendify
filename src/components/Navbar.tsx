@@ -165,6 +165,7 @@ const Navbar = () => {
                     </>
                   ) : (
                     <>
+                      <NavLink to="/redeem" label="Lifetime Deal" icon={Gift} color="text-emerald-500" />
                       <NavLink to="/auth" label="Sign In" icon={LogIn} />
                     </>
                   )}
@@ -268,6 +269,12 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/dealmirror" className="gap-2">
+                  <Gift className="h-4 w-4" />
+                  <span className="hidden sm:inline">Lifetime Deal</span>
+                </Link>
+              </Button>
               <Button asChild size="sm">
                 <Link to="/auth" className="gap-2">
                   <LogIn className="w-4 h-4" />
