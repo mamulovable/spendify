@@ -4,6 +4,13 @@ import { authService } from '@/services/authService';
 import { supabase } from '@/lib/supabase';
 import { UserProfile, AuthState } from '@/types/auth';
 
+export interface OnboardingAnswers {
+  documentTypes?: string;
+  mainGoal?: string;
+  analysisFrequency?: string;
+  selectedPlanId?: string;
+  interestedTools?: string[];
+}
 // Create the auth context
 export const AuthContext = createContext<{
   user: UserProfile | null;
@@ -12,6 +19,8 @@ export const AuthContext = createContext<{
   error: Error | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signUp: (email: string, password: string) => Promise<User | null | undefined>;
+  updateUserOnboardingData: (onboardingAnswers: OnboardingAnswers) => Promise<void>;
   isAppSumoUser: boolean;
   isDealifyUser: boolean;
 }>({
@@ -21,6 +30,8 @@ export const AuthContext = createContext<{
   error: null,
   signIn: async () => {},
   signOut: async () => {},
+  signUp: async () => undefined,
+  updateUserOnboardingData: async () => {},
   isAppSumoUser: false,
   isDealifyUser: false,
 });
@@ -123,6 +134,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setAuthState(prev => ({
+        ...prev,
+        user: data.user as UserProfile,
+        session: data.session,
+        loading: false,
+      }));
+
+      return data.user;
+    } catch (error) {
+      console.error('Error signing up:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as Error,
+      }));
+      throw error;
+    }
+  };
+
+  const updateUserOnboardingData = async (onboardingAnswers: OnboardingAnswers) => {
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.updateUser({
+        data: {
+          onboarding_completed: true,
+          ...onboardingAnswers,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setAuthState(prev => ({
+        ...prev,
+        user: data.user as UserProfile,
+        loading: false,
+      }));
+    } catch (error) {
+      console.error('Error updating user onboarding data:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as Error,
+      }));
+      throw error;
+    }
+  };
+
   // Sign out function
   const signOut = async () => {
     try {
@@ -153,6 +225,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error: authState.error,
     signIn,
     signOut,
+    signUp,
+    updateUserOnboardingData,
     isAppSumoUser,
     isDealifyUser,
   };
