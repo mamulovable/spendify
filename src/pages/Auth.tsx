@@ -95,7 +95,7 @@ const Auth = () => {
 
       // Start the trial for the selected plan
       if (onboardingAnswers.selectedPlanId) {
-        await updateSubscription(onboardingAnswers.selectedPlanId, true); 
+        await updateSubscription(onboardingAnswers.selectedPlanId, { isTrialStart: true });
         toast({ 
           title: "Free Trial Started!",
           description: `Your 7-day trial for the selected plan has begun.`,
