@@ -15,6 +15,7 @@ import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ExpenseTracker from '@/pages/ExpenseTracker';
 import DealifyRedeem from '@/pages/DealifyRedeem';
+import DealFuelRedeem from '@/pages/DealFuelRedeem';
 import DealMirrorRedeem from '@/pages/DealMirrorRedeem';
 import { AdminRoot } from '@/components/admin/AdminRoot';
 
@@ -185,6 +186,10 @@ const appRoutes = [
       {
         path: '/dealify',
         element: <DealifyRedeem />
+      },
+      {
+        path: '/dealfuel',
+        element: <DealFuelRedeem />
       },
       {
         path: '/dealmirror',
