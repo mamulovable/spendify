@@ -50,16 +50,18 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     
     // Prepare the prompt for Gemini
     const prompt = `
-      You are an expert financial data extraction AI.
-      Analyze the bank statement image and extract all transactions.
+      You are a powerful financial data extraction AI.
+      Your task is to analyze any bank statement image, regardless of its format or layout.
+      First, intelligently identify the transaction columns (like date, description, amount, etc.).
+      Then, extract all transactions from the statement.
       Return ONLY a valid JSON object with a "transactions" array.
 
       Each transaction object must contain:
-      - "date": "YYYY-MM-DD"
+      - "date": "YYYY-MM-DD" (or your best guess if format is unusual)
       - "description": "string"
-      - "amount": number (positive)
-      - "type": "income" | "expense"
-      - "category": "string"
+      - "amount": number (always positive)
+      - "type": "income" or "expense"
+      - "category": "string" (e.g., "Food", "Transport", "Salary")
     `;
 
     // Use the approach from usegemini.txt
