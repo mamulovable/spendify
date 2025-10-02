@@ -13,13 +13,15 @@ const readImageFile = (file: File): Promise<string> => {
 // Function to parse the JSON response from Gemini
 const parseGeminiResponse = (response: string): BankTransaction[] => {
   try {
-    // Find JSON in the response (in case there's any surrounding text)
+    // Clean the response by removing markdown fences and any text outside the main JSON object
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('No valid JSON found in the response');
+      throw new Error('No valid JSON object found in the response');
     }
     
-    const jsonString = jsonMatch[0];
+    let jsonString = jsonMatch[0];
+
+    // Attempt to parse the JSON
     const parsedData = JSON.parse(jsonString);
     
     // Convert the Gemini response format to BankTransaction format
@@ -48,43 +50,16 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     
     // Prepare the prompt for Gemini
     const prompt = `
-      You are a financial data extraction expert. Analyze this bank statement image and:
-      1. Extract all transactions with their dates, descriptions, and amounts
-      2. Determine if each transaction is income or expense
-      3. Suggest a category for each transaction
-      4. Format the data as a valid JSON object
+      You are an expert financial data extraction AI.
+      Analyze the bank statement image and extract all transactions.
+      Return ONLY a valid JSON object with a "transactions" array.
 
-      Required JSON format:
-      {
-        "transactions": [
-          {
-            "date": "YYYY-MM-DD",
-            "description": "string",
-            "amount": number,
-            "type": "income" | "expense",
-            "category": "string"
-          }
-        ],
-        "summary": {
-          "totalIncome": number,
-          "totalExpenses": number,
-          "period": {
-            "startDate": "YYYY-MM-DD",
-            "endDate": "YYYY-MM-DD"
-          }
-        }
-      }
-
-      Rules:
-      1. Ensure all dates are in YYYY-MM-DD format
-      2. All amounts should be positive numbers
-      3. Use "income" for deposits and "expense" for withdrawals
-      4. Categorize transactions into: groceries, utilities, rent, salary, entertainment, transport, etc.
-      5. Remove any personal identifying information
-      6. Ensure the JSON is valid and properly formatted
-      7. Make sure the output is only the JSON, with no additional text
-
-      Extract all visible transactions from the image and return them as JSON.
+      Each transaction object must contain:
+      - "date": "YYYY-MM-DD"
+      - "description": "string"
+      - "amount": number (positive)
+      - "type": "income" | "expense"
+      - "category": "string"
     `;
 
     // Use the approach from usegemini.txt
