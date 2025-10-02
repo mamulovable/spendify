@@ -99,7 +99,7 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
       : imageBase64;
 
     // Call Gemini API directly
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
     
     const response = await fetch(url, {
       method: 'POST',
@@ -128,6 +128,9 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('You have exceeded your Gemini API quota. Please check your Google Cloud project for more details or consider upgrading your plan.');
+      }
       const errorText = await response.text();
       console.error('Gemini API Error:', {
         status: response.status,
