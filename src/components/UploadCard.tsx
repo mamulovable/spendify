@@ -132,8 +132,8 @@ const UploadCard = () => {
       
       toast({
         variant: "destructive",
-        title: "Processing failed",
-        description: `Could not extract data from the ${isPDF ? 'PDF' : 'image'}. Please try another file.`,
+        title: "Processing Failed",
+        description: errorMessage,
       });
     }
   };

@@ -139,23 +139,7 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     return transactions;
   } catch (error) {
     console.error('Error processing image with Gemini:', error);
-    
-    // Return mock data if there's an error
-    return [
-      {
-        date: "2023-01-01",
-        description: "Sample Transaction 1",
-        amount: 100.00,
-        type: "credit",
-        category: "salary"
-      },
-      {
-        date: "2023-01-02",
-        description: "Sample Transaction 2",
-        amount: 50.00,
-        type: "debit",
-        category: "groceries"
-      }
-    ];
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    throw new Error(`Failed to analyze the statement. Please ensure the image is clear and not a protected document. Error: ${errorMessage}`);
   }
 };
