@@ -50,24 +50,25 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     
     // Prepare the prompt for Gemini
     const prompt = `
-      You are a highly intelligent financial data extraction AI.
-      Your primary task is to analyze any bank statement image, even those with complex or unconventional layouts.
+      You are an advanced financial data extraction AI. Your task is to analyze any bank statement image, even with unusual or complex layouts.
 
-      **Step 1: Identify the Transaction Area.**
-      First, locate the specific region of the document that contains the list of transactions. Ignore all other text and headers.
+      **Follow this two-step process:**
 
-      **Step 2: Extract Transaction Data.**
-      Once you have identified the transaction area, extract all transactions from that region.
+      **Step 1: Structural Analysis**
+      First, analyze the entire document to understand its structure. Identify the main transaction table and the exact headers for the columns that contain the date, description, and amount of each transaction.
 
-      **Step 3: Format as JSON.**
-      Return ONLY a valid JSON object with a "transactions" array. Do not include any other text or explanations.
+      **Step 2: Data Extraction**
+      After you have identified the columns, extract all transactions from the table.
 
-      Each transaction object in the array must contain:
-      - "date": "YYYY-MM-DD" (be flexible with date formats)
+      **Output Format:**
+      Return ONLY a valid JSON object with a "transactions" array. Do not include any other text, explanations, or markdown.
+
+      Each transaction object must contain:
+      - "date": "YYYY-MM-DD" (be flexible with various date formats)
       - "description": "string"
-      - "amount": number (always positive)
+      - "amount": number (always a positive value)
       - "type": "income" or "expense"
-      - "category": "string" (e.g., "Groceries", "Utilities", "Salary")
+      - "category": "string" (e.g., "Utilities", "Groceries", "Salary")
     `;
 
     // Use the approach from usegemini.txt
