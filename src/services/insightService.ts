@@ -73,9 +73,9 @@ export const generateInsights = async (
       }
     }
 
-    // Use the latest Gemini 2.5-flash model as requested
-    console.log('Using Gemini 2.5-flash model');
-    const model = genAI!.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    // Use the latest Gemini 2.5-flash-preview-09-2025 model as requested
+    console.log('Using Gemini 2.5-flash-preview-09-2025 model');
+    const model = genAI!.getGenerativeModel({ model: 'gemini-2.5-flash-preview-09-2025' });
 
     // --- Add checks for potentially undefined numeric values ---
     const safeTotalIncome = typeof statement.totalIncome === 'number' ? statement.totalIncome : 0;

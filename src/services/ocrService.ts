@@ -50,18 +50,24 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     
     // Prepare the prompt for Gemini
     const prompt = `
-      You are a powerful financial data extraction AI.
-      Your task is to analyze any bank statement image, regardless of its format or layout.
-      First, intelligently identify the transaction columns (like date, description, amount, etc.).
-      Then, extract all transactions from the statement.
-      Return ONLY a valid JSON object with a "transactions" array.
+      You are a highly intelligent financial data extraction AI.
+      Your primary task is to analyze any bank statement image, even those with complex or unconventional layouts.
 
-      Each transaction object must contain:
-      - "date": "YYYY-MM-DD" (or your best guess if format is unusual)
+      **Step 1: Identify the Transaction Area.**
+      First, locate the specific region of the document that contains the list of transactions. Ignore all other text and headers.
+
+      **Step 2: Extract Transaction Data.**
+      Once you have identified the transaction area, extract all transactions from that region.
+
+      **Step 3: Format as JSON.**
+      Return ONLY a valid JSON object with a "transactions" array. Do not include any other text or explanations.
+
+      Each transaction object in the array must contain:
+      - "date": "YYYY-MM-DD" (be flexible with date formats)
       - "description": "string"
       - "amount": number (always positive)
       - "type": "income" or "expense"
-      - "category": "string" (e.g., "Food", "Transport", "Salary")
+      - "category": "string" (e.g., "Groceries", "Utilities", "Salary")
     `;
 
     // Use the approach from usegemini.txt
@@ -76,7 +82,7 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
       : imageBase64;
 
     // Call Gemini API directly
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
     
     const response = await fetch(url, {
       method: 'POST',
