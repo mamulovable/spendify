@@ -50,25 +50,29 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
     
     // Prepare the prompt for Gemini
     const prompt = `
-      You are an advanced financial data extraction AI. Your task is to analyze any bank statement image, even with unusual or complex layouts.
-
-      **Follow this two-step process:**
-
-      **Step 1: Structural Analysis**
-      First, analyze the entire document to understand its structure. Identify the main transaction table and the exact headers for the columns that contain the date, description, and amount of each transaction.
-
-      **Step 2: Data Extraction**
-      After you have identified the columns, extract all transactions from the table.
-
-      **Output Format:**
-      Return ONLY a valid JSON object with a "transactions" array. Do not include any other text, explanations, or markdown.
-
-      Each transaction object must contain:
-      - "date": "YYYY-MM-DD" (be flexible with various date formats)
-      - "description": "string"
-      - "amount": number (always a positive value)
-      - "type": "income" or "expense"
-      - "category": "string" (e.g., "Utilities", "Groceries", "Salary")
+      You are a financial data extraction AI.
+      Analyze the provided bank statement image and extract all transactions.
+      Your output MUST be a valid JSON object that adheres to the following schema:
+      {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": { "type": "string", "format": "date" },
+                "description": { "type": "string" },
+                "amount": { "type": "number" },
+                "type": { "type": "string", "enum": ["income", "expense"] },
+                "category": { "type": "string" }
+              },
+              "required": ["date", "description", "amount", "type", "category"]
+            }
+          }
+        },
+        "required": ["transactions"]
+      }
     `;
 
     // Use the approach from usegemini.txt
@@ -103,6 +107,7 @@ export const processImageAndExtractTransactions = async (file: File): Promise<Ba
           ]
         }],
         generationConfig: {
+          response_mime_type: "application/json",
           temperature: 0.1,
           topK: 1,
           topP: 0.1,
