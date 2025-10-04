@@ -102,6 +102,13 @@ async function callGeminiAPI(
         return { candidates: [{ content: { parts: [{ text: "Authentication error with Gemini API. Your API key may be invalid or expired. Please check the .env file and make sure you have a valid API key from Google AI Studio (https://aistudio.google.com/)." }] } }] };
       }
       
+      // Handle specific 400 error for invalid API key, which was causing crashes
+      if (response.status === 400 && JSON.stringify(errorData).includes('API key not valid')) {
+        console.warn('Invalid API Key error with Gemini API, using mock responses');
+        useMockResponses = true;
+        return { candidates: [{ content: { parts: [{ text: "The configured Gemini API key is not valid. Please check your configuration. Falling back to mock data." }] } }] };
+      }
+
       throw new Error(`Gemini API error: ${response.status} - ${response.statusText} - ${JSON.stringify(errorData)}`);
     }
     
