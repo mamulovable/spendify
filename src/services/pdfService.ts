@@ -996,8 +996,8 @@ export const processBankStatement = async (file: File): Promise<ProcessedStateme
         console.log('Extracted transactions with Gemini:', processedData.transactions.length);
       } catch (geminiError) {
         console.error('Gemini processing also failed:', geminiError);
-        // Return the original empty data to avoid crashing
-        return processedData;
+        // Re-throw the error to be caught by the main try-catch block
+        throw geminiError;
       }
     }
     
