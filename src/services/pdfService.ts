@@ -1,5 +1,6 @@
 
 import * as pdfjs from 'pdfjs-dist';
+import { generateText } from './geminiProxyService';
 
 // Get the version of pdfjs being used
 const pdfJsVersion = pdfjs.version;
@@ -868,6 +869,104 @@ export const categorizeTransaction = (description: string): string => {
 /**
  * Main function to process a bank statement PDF
  */
+/**
+ * Process bank statement text using Gemini for robust transaction extraction
+ */
+export const processTransactionsWithGemini = async (textContent: string[]): Promise<ProcessedStatement> => {
+  console.log('--- Using Gemini for PDF Transaction Extraction ---');
+
+  const fullText = textContent.join('\n\n');
+
+  // Prepare the prompt for Gemini
+  const prompt = `
+    You are an expert financial data analyst. Analyze the following bank statement text
+    and extract all transactions. The text is extracted from a PDF and may have formatting issues.
+
+    Your task is to:
+    1.  Identify every transaction, including its date, description, amount, and type (debit or credit).
+    2.  Calculate the total income (sum of all credit transactions) and total expenses (sum of all debit transactions).
+    3.  Determine the statement period (start and end dates), and identify the account holder's name and account number if available.
+    4.  Format the output as a single, valid JSON object that conforms to the following structure.
+        Do not include any text or markdown formatting before or after the JSON object.
+
+    Required JSON format:
+    {
+      "transactions": [
+        {
+          "date": "YYYY-MM-DD",
+          "description": "string",
+          "amount": number,
+          "type": "credit" | "debit",
+          "category": "string"
+        }
+      ],
+      "totalIncome": number,
+      "totalExpense": number,
+      "balance": number,
+      "startDate": "YYYY-MM-DD",
+      "endDate": "YYYY-MM-DD",
+      "accountName": "string",
+      "accountNumber": "string"
+    }
+
+    Rules:
+    - Ensure all dates are in YYYY-MM-DD format. If the year is not specified, infer it from the statement period.
+    - All transaction amounts must be positive numbers.
+    - 'type' must be either "credit" (for deposits/income) or "debit" (for withdrawals/expenses).
+    - Categorize each transaction based on its description (e.g., 'Food & Dining', 'Transportation', 'Salary').
+    - If the statement period, account name, or account number are not found, set their values to an empty string.
+
+    Here is the bank statement text:
+    ---
+    ${fullText}
+    ---
+  `;
+
+  try {
+    const geminiResponse = await generateText(prompt, 0.2);
+
+    // Extract the JSON from the response
+    const jsonMatch = geminiResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No valid JSON found in Gemini response');
+    }
+
+    const jsonString = jsonMatch[0];
+    const parsedData: ProcessedStatement = JSON.parse(jsonString);
+
+    // Validate and clean the data
+    const cleanedTransactions = parsedData.transactions.map(t => ({
+      ...t,
+      amount: Math.abs(Number(t.amount)),
+      type: t.type === 'credit' ? 'credit' : 'debit',
+      category: t.category || categorizeTransaction(t.description)
+    }));
+
+    const totalIncome = cleanedTransactions
+      .filter(t => t.type === 'credit')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const totalExpense = cleanedTransactions
+      .filter(t => t.type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    return {
+      ...parsedData,
+      transactions: cleanedTransactions,
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense
+    };
+  } catch (error) {
+    console.error('Error processing transactions with Gemini:', error);
+    throw new Error(`Failed to process transactions with Gemini: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
+
+
+/**
+ * Main function to process a bank statement PDF
+ */
 export const processBankStatement = async (file: File): Promise<ProcessedStatement> => {
   console.log('=== PROCESSING BANK STATEMENT ===');
   console.log('File name:', file.name);
@@ -879,102 +978,26 @@ export const processBankStatement = async (file: File): Promise<ProcessedStateme
     console.log('=== PDF TEXT EXTRACTION COMPLETE ===');
     console.log('Extracted', textContent.length, 'pages of text');
     
-    // Show sample of first page text for debugging
     if (textContent.length > 0) {
       const firstPageSample = textContent[0].substring(0, 200) + '...';
       console.log('First page sample:', firstPageSample);
     }
     
-    const processedData = processTransactions(textContent);
+    let processedData = processTransactions(textContent);
     console.log('=== TRANSACTION PROCESSING COMPLETE ===');
     console.log('Extracted transactions:', processedData.transactions.length);
     
-    // If no transactions were found, try one last fallback - look for specific patterns in the Nigerian bank statement
+    // If regex-based parsing fails, fall back to Gemini
     if (processedData.transactions.length === 0) {
-      console.log('No transactions found with regular methods, trying final fallback');
-      
-      // Extract data from table using a more direct approach
-      let fallbackTransactions: BankTransaction[] = [];
-      
-      // Look for lines that have patterns matching transactions in the PDF shown
-      textContent.forEach(pageText => {
-        const lines = pageText.split('\n');
-        
-        lines.forEach(line => {
-          // Check for patterns like "Transfer to" or "Transfer from" followed by amounts
-          if (line.match(/\d{2}\s+\w{3}\s+\d{4}.*Transfer\s+(to|from)/i)) {
-            try {
-              // Extract transaction details using more flexible approach
-              const dateMatch = line.match(/^(\d{2}\s+\w{3}\s+\d{4})/);
-              const isDebit = line.includes('Transfer to') || line.includes('-');
-              const isCredit = line.includes('Transfer from') || line.includes('+');
-              
-              // Find amount using a looser pattern - find numbers with decimal points
-              const amountMatches = [...line.matchAll(/[-+]?[\d,]+\.\d{2}/g)].map(m => m[0]);
-              
-              if (dateMatch && amountMatches.length > 0) {
-                const valueDate = dateMatch[0];
-                
-                // Extract description
-                let description = '';
-                if (isDebit) {
-                  const toMatch = line.match(/Transfer to\s+([^-+]+)/);
-                  description = toMatch ? `Transfer to ${toMatch[1].trim()}` : 'Transfer out';
-                } else {
-                  const fromMatch = line.match(/Transfer from\s+([^-+]+)/);
-                  description = fromMatch ? `Transfer from ${fromMatch[1].trim()}` : 'Transfer in';
-                }
-                
-                // Extract amount and balance - typically the first two numbers
-                let amount = 0;
-                let balance = 0;
-                
-                // Clean and parse amount - remove currency symbols and commas
-                const cleanAmount = amountMatches[0].replace(/[₦,]/g, '').replace(/^[-+]/, '');
-                amount = parseFloat(cleanAmount);
-                
-                if (amountMatches.length > 1) {
-                  const cleanBalance = amountMatches[1].replace(/[₦,]/g, '');
-                  balance = parseFloat(cleanBalance);
-                }
-                
-                // Extract channel if present
-                const channelMatch = line.match(/E-Channel|USSD|SMS/);
-                const channel = channelMatch ? channelMatch[0] : '';
-                
-                // Create transaction
-                const transaction: BankTransaction = {
-                  date: valueDate,
-                  description,
-                  amount,
-                  type: isDebit ? 'debit' : 'credit',
-                  balance,
-                  channel,
-                  category: categorizeTransaction(description)
-                };
-                
-                console.log(`Fallback found: ${valueDate} | ${description} | ${amount} | ${isDebit ? 'debit' : 'credit'}`);
-                fallbackTransactions.push(transaction);
-                
-                // Update totals
-                if (isDebit) {
-                  processedData.totalExpense += amount;
-                } else {
-                  processedData.totalIncome += amount;
-                }
-              }
-            } catch (error) {
-              console.warn('Error in fallback transaction parsing:', error);
-            }
-          }
-        });
-      });
-      
-      // Add fallback transactions to the processed data
-      if (fallbackTransactions.length > 0) {
-        processedData.transactions = fallbackTransactions;
-        processedData.balance = processedData.totalIncome - processedData.totalExpense;
-        console.log(`Found ${fallbackTransactions.length} transactions using fallback method`);
+      console.log('No transactions found with standard methods, falling back to Gemini processing...');
+      try {
+        processedData = await processTransactionsWithGemini(textContent);
+        console.log('--- GEMINI PROCESSING COMPLETE ---');
+        console.log('Extracted transactions with Gemini:', processedData.transactions.length);
+      } catch (geminiError) {
+        console.error('Gemini processing also failed:', geminiError);
+        // Return the original empty data to avoid crashing
+        return processedData;
       }
     }
     
